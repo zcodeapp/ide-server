@@ -1,0 +1,35 @@
+services:
+  node_cli:
+    image: zcodeapp/node
+    build:
+      context: ${PWD}
+      dockerfile: docker/node/Dockerfile
+    volumes:
+      - ${PWD}:/var/www
+
+  nest_dev:
+    image: zcodeapp/node
+    depends_on:
+      - node_cli
+    entrypoint: /usr/local/bin/npm
+    command: run start:dev --hostname 0.0.0.0
+    volumes:
+      - ${PWD}:/var/www
+    ports:
+      - 4000:4000
+    environment:
+      - PORT=4000
+
+  nest_debug:
+    image: zcodeapp/node
+    depends_on:
+      - node_cli
+    entrypoint: /usr/local/bin/npm
+    command: run debug
+    volumes:
+      - ${PWD}:/var/www
+    ports:
+      - 4000:4000
+      - 9229:9229
+    environment:
+      - PORT=4000

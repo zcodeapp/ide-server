@@ -1,0 +1,12 @@
+#!/bin/sh
+
+trap_ctrlc() {
+    docker compose stop nest_dev;
+    docker compose rm --force nest_dev;
+    exit 2;
+}
+
+trap "trap_ctrlc" 2;
+
+docker compose up -d nest_dev;
+docker compose logs -f nest_dev
