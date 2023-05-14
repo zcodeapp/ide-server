@@ -1,9 +1,12 @@
+import { Inject, Logger } from '@nestjs/common';
 import {
   SubscribeMessage,
   WebSocketGateway as NestWebSocket,
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { IPackageInfo } from '../utils/package/package.interface';
+import { WebSocketService } from './websocket.service';
 
 @NestWebSocket({
   cors: {
@@ -14,10 +17,13 @@ export class WebSocketGateway {
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage('ping')
-  async ping(): Promise<{ value: string }> {
-    return {
-      value: 'pong'
-    };
+  constructor(
+    private readonly _webSocketService: WebSocketService,
+  ){}
+
+
+  @SubscribeMessage('version')
+  async version(): Promise<IPackageInfo> {
+    return this._webSocketService.getPackageInfo();
   }
 }

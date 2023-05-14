@@ -1,6 +1,4 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { WebSocketModule } from './websocket/websocket.module';
 
@@ -9,11 +7,8 @@ import { WebSocketModule } from './websocket/websocket.module';
     ConfigModule.forRoot(),
     WebSocketModule,
   ],
-  controllers: [
-    AppController
-  ],
   providers: [
-    AppService
+    Logger,
   ],
 })
 export class AppModule {}

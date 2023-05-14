@@ -33,3 +33,19 @@ services:
       - 9229:9229
     environment:
       - PORT=4000
+
+  nest_test:
+    image: zcodeapp/node
+    depends_on:
+      - node_cli
+    entrypoint: ['/usr/local/bin/npm', 'run', 'test:cov']
+    command: ''
+    volumes:
+      - ${PWD}:/var/www
+    ports:
+      - 4000:4000
+    environment:
+      - PORT=4000
+
+  websocket_cli:
+    image: solsson/websocat
