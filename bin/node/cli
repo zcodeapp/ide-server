@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker compose run -it node_cli
+docker compose run --rm -it node_cli
