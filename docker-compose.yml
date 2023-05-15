@@ -42,8 +42,6 @@ services:
     command: ''
     volumes:
       - ${PWD}:/var/www
-    ports:
-      - 4000:4000
     environment:
       - PORT=4000
 

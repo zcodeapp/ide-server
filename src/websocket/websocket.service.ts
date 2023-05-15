@@ -4,11 +4,10 @@ import { IPackageInfo } from '../utils/package/package.interface';
 
 @Injectable()
 export class WebSocketService {
-
   constructor(
     private readonly _package: Package,
-    private readonly _logger: Logger
-  ){}
+    private readonly _logger: Logger,
+  ) {}
 
   async getPackageInfo(): Promise<IPackageInfo> {
     const packageInfo = this._package.getPackageInfo();

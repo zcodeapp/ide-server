@@ -4,11 +4,6 @@ import { Package } from '../utils/package/package';
 import { WebSocketService } from './websocket.service';
 
 @Module({
-  providers: [
-    Package,
-    WebSocketService,
-    WebSocketGateway,
-    Logger,
-  ],
+  providers: [Package, WebSocketService, WebSocketGateway, Logger],
 })
 export class WebSocketModule {}

@@ -1,18 +1,14 @@
 import { INestApplicationContext, Logger } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
-import {
-  BaseWsInstance,
-  MessageMappingProperties,
-} from '@nestjs/websockets';
+import { BaseWsInstance, MessageMappingProperties } from '@nestjs/websockets';
 import { Observable } from 'rxjs';
 import { Server, ServerOptions, Socket } from 'socket.io';
 
 export class WebSocketAdapter extends IoAdapter {
-
   constructor(
     private readonly _logger: Logger,
-    readonly appOrHttpServer?: INestApplicationContext
-  ){
+    readonly appOrHttpServer?: INestApplicationContext,
+  ) {
     super(appOrHttpServer);
   }
 
@@ -26,7 +22,11 @@ export class WebSocketAdapter extends IoAdapter {
     super.dispose();
   }
 
-  public bindMessageHandlers(socket: Socket, handlers: MessageMappingProperties[], transform: (data: any) => Observable<any>): void {
+  public bindMessageHandlers(
+    socket: Socket,
+    handlers: MessageMappingProperties[],
+    transform: (data: any) => Observable<any>,
+  ): void {
     this._logger.log('Bind bindMessageHandlers');
     super.bindMessageHandlers(socket, handlers, transform);
   }
@@ -34,28 +34,31 @@ export class WebSocketAdapter extends IoAdapter {
   public createIOServer(port: number, options?: any): any {
     this._logger.log('Bind createIOServer', {
       port,
-      options
+      options,
     });
     return super.createIOServer(port, options);
   }
 
-  public create(port: number, options?: ServerOptions & {
-    namespace?: string;
-    server?: any;
-  }): Server {
+  public create(
+    port: number,
+    options?: ServerOptions & {
+      namespace?: string;
+      server?: any;
+    },
+  ): Server {
     this._logger.log('Bind create', {
       port,
-      options
+      options,
     });
     return super.create(port, options);
   }
 
-  public bindClientConnect(server: Server, callback: Function): void {
+  public bindClientConnect(server: Server, callback: () => void): void {
     this._logger.log('Bind bindClientConnect');
     super.bindClientConnect(server, callback);
   }
 
-  public bindClientDisconnect(client: Socket, callback: Function): void {
+  public bindClientDisconnect(client: Socket, callback: () => void): void {
     this._logger.log('Bind bindClientDisconnect');
     super.bindClientDisconnect(client, callback);
   }

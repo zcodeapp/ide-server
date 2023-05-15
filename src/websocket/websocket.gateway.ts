@@ -1,4 +1,3 @@
-import { Inject, Logger } from '@nestjs/common';
 import {
   SubscribeMessage,
   WebSocketGateway as NestWebSocket,
@@ -17,10 +16,7 @@ export class WebSocketGateway {
   @WebSocketServer()
   server: Server;
 
-  constructor(
-    private readonly _webSocketService: WebSocketService,
-  ){}
-
+  constructor(private readonly _webSocketService: WebSocketService) {}
 
   @SubscribeMessage('version')
   async version(): Promise<IPackageInfo> {

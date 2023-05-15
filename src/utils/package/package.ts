@@ -4,7 +4,6 @@ import * as fs from 'fs';
 
 @Injectable()
 export class Package {
-
   getPackageInfo(): IPackageInfo {
     const file = fs.readFileSync('package.json').toString();
     const info = JSON.parse(file);

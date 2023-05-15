@@ -1,16 +1,13 @@
-import { WebSocketGateway } from './websocket.gateway';
 import { WebSocketService } from './websocket.service';
 import { Package } from '../utils/package/package';
 import { IPackageInfo } from 'src/utils/package/package.interface';
 
-jest.mock('./websocket.service');
 jest.mock('../utils/package/package');
 
-describe('websocket/websocket.gateway', () => {
+describe('websocket/websocket.service', () => {
   let logs: { message: string; params?: any }[] = [];
-  let webSocketGateway: WebSocketGateway;
-  let webSocketService: WebSocketService;
   let _package: Package;
+  let webSocketService: WebSocketService;
   const logger = {
     log: (message: string, params?: any): void => {
       logs.push({ message, params });
@@ -20,7 +17,6 @@ describe('websocket/websocket.gateway', () => {
   beforeEach(() => {
     _package = new Package();
     webSocketService = new WebSocketService(_package, logger);
-    webSocketGateway = new WebSocketGateway(webSocketService);
   });
 
   afterEach(() => {
@@ -39,9 +35,13 @@ describe('websocket/websocket.gateway', () => {
       },
     };
     jest
-      .spyOn(webSocketService, 'getPackageInfo')
-      .mockImplementation(async () => packageInfo);
-
-    expect(await webSocketGateway.version()).toStrictEqual(packageInfo);
+      .spyOn(_package, 'getPackageInfo')
+      .mockImplementation(() => packageInfo);
+    expect(await webSocketService.getPackageInfo()).toStrictEqual(packageInfo);
+    expect(logs[0].message).toBe('get version');
+    expect(logs[0].params).toStrictEqual({
+      name: 'package/1',
+      version: '1.0.0-alpha',
+    });
   });
 });
