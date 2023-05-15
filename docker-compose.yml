@@ -1,6 +1,6 @@
 services:
   node_cli:
-    image: zcodeapp/node
+    image: zcodeapp/node_backend
     build:
       context: ${PWD}
       dockerfile: docker/node/Dockerfile
@@ -8,7 +8,10 @@ services:
       - ${PWD}:/var/www
 
   nest_dev:
-    image: zcodeapp/node
+    image: zcodeapp/node_backend
+    build:
+      context: ${PWD}
+      dockerfile: docker/node/Dockerfile
     depends_on:
       - node_cli
     entrypoint: /usr/local/bin/npm
@@ -21,7 +24,10 @@ services:
       - PORT=4000
 
   nest_debug:
-    image: zcodeapp/node
+    image: zcodeapp/node_backend
+    build:
+      context: ${PWD}
+      dockerfile: docker/node/Dockerfile
     depends_on:
       - node_cli
     entrypoint: /usr/local/bin/npm
@@ -35,7 +41,10 @@ services:
       - PORT=4000
 
   nest_test:
-    image: zcodeapp/node
+    image: zcodeapp/node_backend
+    build:
+      context: ${PWD}
+      dockerfile: docker/node/Dockerfile
     depends_on:
       - node_cli
     entrypoint: ['/usr/local/bin/npm', 'run', 'test:cov']
