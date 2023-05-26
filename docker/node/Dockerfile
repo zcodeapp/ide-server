@@ -2,7 +2,9 @@ FROM node:20.1.0
 
 USER root
 
-RUN mkdir -p /var/www \
+RUN mkdir -p /var/www /__w/_temp/_runner_file_commands \
+    && chown node:node -R /__w \
+    && chmod +w -R /__w \
     && apt-get update \
     && apt-get install git curl vim -y \
     && curl -sSL https://get.docker.com/ | sh \
