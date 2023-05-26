@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: zcodeapp/node_backend
-      options: --cpus 1
+      options: --user root
       env:
         NODE_ENV: production
         DOCKERHUB_USERNAME: secrets.DOCKERHUB_USERNAME
