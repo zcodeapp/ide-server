@@ -1,9 +1,20 @@
 name: ZCode App
-on: push
+on:
+  push:
+    branches:
+      - "main"
+
 jobs:
   build:
     name: Build ZCodeApp to Docker
-    runs-on: zcodeapp/node_backend
+    runs-on: ubuntu-latest
+    container:
+      image: zcodeapp/node_backend
+      options: --cpus 1
+      env:
+        NODE_ENV: production
+        DOCKERHUB_USERNAME: secrets.DOCKERHUB_USERNAME
+        DOCKERHUB_ACCESS_TOKEN: secrets.DOCKERHUB_ACCESS_TOKEN
     steps:
       - name: Build
-        run: bin/ci/build
+        run: DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN bin/ci/build
