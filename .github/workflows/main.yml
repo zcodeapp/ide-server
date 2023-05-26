@@ -1,14 +1,9 @@
 name: ZCode App
 on: push
 jobs:
-  test:
+  build:
+    name: Build ZCodeApp to Docker
     runs-on: zcodeapp/node_backend
     steps:
-      - name: Install
-        run: bin/node/install
-      - name: Lint
-        run: npm run lint;
-      - name: Tests
-        run: bin/node/test_unit; bin/node/test_e2e;
       - name: Build
-        run: npm run build
+        run: bin/ci/build
