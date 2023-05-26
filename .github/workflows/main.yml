@@ -18,6 +18,5 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Build
         run: DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN bin/ci/build
