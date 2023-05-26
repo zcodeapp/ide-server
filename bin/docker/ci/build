@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+docker compose run -it --rm node_cli -c "bin/ci/build $@";

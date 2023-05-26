@@ -6,6 +6,10 @@ services:
       dockerfile: docker/node/Dockerfile
     volumes:
       - ${PWD}:/var/www
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME}
+      - DOCKERHUB_ACCESS_TOKEN=${DOCKERHUB_ACCESS_TOKEN}
 
   nest_dev:
     image: zcodeapp/node_backend
@@ -14,10 +18,10 @@ services:
       dockerfile: docker/node/Dockerfile
     depends_on:
       - node_cli
-    entrypoint: /usr/local/bin/npm
-    command: run start:dev --hostname 0.0.0.0
+    entrypoint: bin/node/nest
     volumes:
       - ${PWD}:/var/www
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 4000:4000
     environment:
@@ -30,10 +34,10 @@ services:
       dockerfile: docker/node/Dockerfile
     depends_on:
       - node_cli
-    entrypoint: /usr/local/bin/npm
-    command: run debug
+    entrypoint: bin/node/nest_debug
     volumes:
       - ${PWD}:/var/www
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 4000:4000
       - 9229:9229
@@ -47,12 +51,10 @@ services:
       dockerfile: docker/node/Dockerfile
     depends_on:
       - node_cli
-    entrypoint: ['/usr/local/bin/npm', 'run', 'test:cov']
+    entrypoint: /bin/bash
     command: ''
     volumes:
       - ${PWD}:/var/www
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - PORT=4000
-
-  websocket_cli:
-    image: solsson/websocat

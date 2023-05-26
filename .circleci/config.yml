@@ -1,0 +1,23 @@
+version: 2
+jobs:
+  build:
+    
+    docker:
+      - image: zcodeapp/node_backend
+
+    environment:
+      DOCKERHUB_USERNAME: ${DOCKERHUB_USERNAME}
+      DOCKERHUB_ACCESS_TOKEN: ${DOCKERHUB_ACCESS_TOKEN}
+    
+    steps:
+      - run:
+          command: bin/docker/ci/build
+
+workflows:
+  build-deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore:
+                - develop

@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+# Like this script? 
+# Generate boilerplate for similar ones at https://bashplate.wolfgang-werner.net.
+
+set -o errexit  # exit on error
+set -o nounset  # don't allow unset variables
+# set -o xtrace # enable for debugging
+
+usage() {
+  printf "CI get next version\n"
+
+  printf "Usage: bin/ci/version "
+  printf -- "-s <source> "
+  printf -- "[-m] "
+  printf -- "[-i] "
+  printf -- "[-p] "
+  printf -- "[-h] "
+  printf -- "[-v] "
+  printf "\n"
+
+  printf "  -%s\t%s - %s%s\n" "s" "source" "Source version" ""
+  printf "  -%s\t%s - %s%s\n" "m" "major" "Major version" ""
+  printf "  -%s\t%s - %s%s\n" "i" "minor" "Minor version" ""
+  printf "  -%s\t%s - %s%s\n" "p" "patch" "Patch version" ""
+  printf "  -%s\t%s - %s%s\n" "h" "help" "Show this help message." ""
+  printf "  -%s\t%s - %s%s\n" "v" "version" "Show version information." ""
+}
+
+version() {
+  printf "0.0.1\n"
+}
+
+# default values
+opt_help="false"
+opt_version="false"
+opt_major="false"
+opt_minor="false"
+opt_patch="false"
+opt_source=""
+
+# declared functions
+
+# option parsing
+OPTSPEC=:hvmips:
+while getopts $OPTSPEC option; do
+  case "$option" in
+    h ) opt_help="true"; usage; exit 0  ;;
+    v ) opt_version="true"; version; exit 0  ;;
+    s ) opt_source=$OPTARG;  ;;
+    m ) opt_major="true";  ;;
+    i ) opt_minor="true";  ;;
+    p ) opt_patch="true";  ;;
+   \? ) echo "Unknown option: -$OPTARG" >&2; exit 1;;
+    : ) echo "Missing option argument for -$OPTARG" >&2; exit 1;;
+    * ) echo "Unimplemented option: -$OPTARG" >&2; exit 1;;
+  esac
+done
+shift $((OPTIND - 1))
+
+# required option validation
+if [ -z "$opt_source" ] ; then
+  usage
+  exit 1
+fi
+
+if [ ! -e "$opt_source" ]; then
+  echo -e "\nSource [$opt_source] not found!\n"
+  usage
+  exit 1;
+fi
+
+CURRENT_VERSION=$(cat $opt_source)
+IFS='.' read -r -a POSITIONS <<< "$CURRENT_VERSION"
+
+MAJOR=$((POSITIONS[0]))
+MINOR=$((POSITIONS[1]))
+PATCH=$((POSITIONS[2]))
+OLD_VERSION="$MAJOR.$MINOR.$PATCH"
+
+if [ "$opt_major" == "true" ]; then
+    MAJOR=$((MAJOR+1))
+fi
+
+if [ "$opt_minor" == "true" ]; then
+    MINOR=$((MINOR+1))
+fi
+
+if [ "$opt_patch" == "true" ]; then
+    PATCH=$((PATCH+1))
+fi
+
+NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+
+echo "$NEW_VERSION" > $opt_source
+echo $NEW_VERSION

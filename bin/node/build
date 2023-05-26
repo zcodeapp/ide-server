@@ -1,3 +1,7 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
-docker compose run -it --rm --entrypoint="/bin/sh" node_cli -c "/usr/local/bin/npm run test:cov && /usr/local/bin/npm run test:e2e && npm run format && npm run lint && npm run build";
+/usr/local/bin/npm run format;
+/usr/local/bin/npm run lint;
+/usr/local/bin/npm run build;
+bin/node/test_unit;
+bin/node/test_e2e;

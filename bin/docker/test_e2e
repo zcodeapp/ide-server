@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+docker compose run -it --rm nest_test -c "bin/node/test_e2e $1";

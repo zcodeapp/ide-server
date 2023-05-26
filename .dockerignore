@@ -1,0 +1,9 @@
+coverage
+*.d.ts
+*.log
+docker/*
+*.spec.ts
+*.cy.ts
+*.spec.js
+*.cy.js
+*.md

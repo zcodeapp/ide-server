@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+
+usage() {
+  printf "Docker Hub login\n"
+
+  printf "Usage: bin/docker/login "
+  printf -- "-u <username> "
+  printf -- "[-a <access_token>] "
+  printf -- "[-h] "
+  printf -- "[-v] "
+  printf "\n"
+
+  printf "  -%s\t%s - %s%s\n" "u" "username" "Docker Hub username" ""
+  printf "  -%s\t%s - %s%s\n" "a" "access_token" "Docker Hub Access Token" ""
+  printf "  -%s\t%s - %s%s\n" "h" "help" "Show this help message." ""
+  printf "  -%s\t%s - %s%s\n" "v" "version" "Show version information." ""
+
+  printf "\n\n"
+
+  printf "Environments:\n\n"
+  printf "  DOCKERHUB_USERNAME       - Docker Hub Username for Docker Hub login\n"
+  printf "  DOCKERHUB_ACCESS_TOKEN   - Docker Hub Access Token for Docker Hub login\n"
+  printf "\n"
+  printf "Environments configure:\n\n"
+  printf "  export DOCKERHUB_USERNAME=your_username\n"
+  printf "  export DOCKERHUB_ACCESS_TOKEN=your_access_token\n"
+  printf "\n"
+}
+
+version() {
+  printf "0.0.1\n"
+}
+
+DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME:-}
+DOCKERHUB_ACCESS_TOKEN=${DOCKERHUB_ACCESS_TOKEN:-}
+
+# default values
+opt_help="false"
+opt_version="false"
+opt_username="$DOCKERHUB_USERNAME"
+opt_access_token="$DOCKERHUB_ACCESS_TOKEN"
+
+# declared functions
+
+# option parsing
+OPTSPEC=:hva:u:
+while getopts $OPTSPEC option; do
+  case "$option" in
+    h ) opt_help="true"; usage; exit 0  ;;
+    v ) opt_version="true"; version; exit 0  ;;
+    u ) opt_username=$OPTARG;  ;;
+    a ) opt_access_token=$OPTARG;  ;;
+   \? ) echo -e ""; echo "Unknown option: -$OPTARG" >&2; echo -e ""; usage; exit 1;;
+    : ) echo -e ""; echo "Missing option argument for -$OPTARG" >&2; echo -e ""; usage; exit 1;;
+    * ) echo "Unimplemented option: -$OPTARG" >&2; exit 1;;
+  esac
+done
+shift $((OPTIND - 1))
+
+# required option validation
+if [ -z "$opt_username" ] ; then
+  usage
+  exit 1
+fi
+
+if [ -z $opt_access_token ]; then
+  docker login -u $opt_username
+else
+  docker login -u $opt_username -p $opt_access_token
+fi;

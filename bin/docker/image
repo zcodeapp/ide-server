@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+
+usage() {
+  printf "Create image container\n"
+
+  printf "Usage: bin/docker/image "
+  printf -- "-d <destination> "
+  printf -- "[-h] "
+  printf -- "[-v] "
+  printf "\n"
+
+  printf "  -%s\t%s - %s%s\n" "d" "destination" "Image name destination" ""
+  printf "  -%s\t%s - %s%s\n" "h" "help" "Show this help message." ""
+  printf "  -%s\t%s - %s%s\n" "v" "version" "Show version information." ""
+}
+
+version() {
+  printf "0.0.1\n"
+}
+
+# default values
+opt_help="false"
+opt_version="false"
+opt_destination=""
+
+# declared functions
+
+# option parsing
+OPTSPEC=:hvd:
+while getopts $OPTSPEC option; do
+  case "$option" in
+    h ) opt_help="true"; usage; exit 0  ;;
+    v ) opt_version="true"; version; exit 0  ;;
+    d ) opt_destination=$OPTARG;  ;;
+   \? ) echo "Unknown option: -$OPTARG" >&2; exit 1;;
+    : ) echo "Missing option argument for -$OPTARG" >&2; exit 1;;
+    * ) echo "Unimplemented option: -$OPTARG" >&2; exit 1;;
+  esac
+done
+shift $((OPTIND - 1))
+
+# required option validation
+if [ -z "$opt_destination" ] ; then
+  usage
+  exit 1
+fi
+
+docker build -t $opt_destination:latest -f docker/zcodeserver/Dockerfile .

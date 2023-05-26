@@ -1,12 +1,3 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
-trap_ctrlc() {
-    docker compose stop nest_debug;
-    docker compose rm --force nest_debug;
-    exit 2;
-}
-
-trap "trap_ctrlc" 2;
-
-docker compose up -d nest_debug;
-docker compose logs -f nest_debug
+/usr/local/bin/npm run debug
