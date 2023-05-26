@@ -66,6 +66,9 @@ if [ -z "$opt_username" ] ; then
   exit 1
 fi
 
+echo -e "DOCKERHUB_USERNAME: $DOCKERHUB_USERNAME"
+echo -e "opt_username: $opt_username"
+
 if [ -z $opt_access_token ]; then
   docker login -u $opt_username
 else
