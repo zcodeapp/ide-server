@@ -16,9 +16,7 @@ jobs:
         DOCKERHUB_USERNAME: secrets.DOCKERHUB_USERNAME
         DOCKERHUB_ACCESS_TOKEN: secrets.DOCKERHUB_ACCESS_TOKEN
     steps:
-      - name: fix container
-        run: sudo chown -R $USER:$USER /__w/_temp/_runner_file_commands
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2.0.0
       - name: Build
         run: DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN bin/ci/build
