@@ -6,6 +6,7 @@ RUN mkdir -p /var/www
 
 COPY node_modules /var/www/node_modules
 COPY dist /var/www/dist
+COPY package.json /var/www
 
 WORKDIR /var/www
 
