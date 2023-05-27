@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -e
 set -o errexit
 set -o nounset
 
@@ -49,6 +50,10 @@ if [ -z "$opt_container" ] ; then
 fi
 
 DOCKER_CONTAINER_ID=$(docker ps -aqf "name=$opt_container")
-DOCKER_CONTAINER_HOSTNAME=$(bash -c "docker exec -it --user=root $DOCKER_CONTAINER_ID /bin/bash -c \"hostname -i\"")
-# echo "result:"
+DOCKER_CONTAINER_HOSTNAME=$(/bin/bash -c "docker exec -it --user=root $DOCKER_CONTAINER_ID /bin/bash -c \"hostname -i\"")
+
+if [ -z $DOCKER_CONTAINER_HOSTNAME ]; then
+  exit 1;
+fi
+
 echo $DOCKER_CONTAINER_HOSTNAME

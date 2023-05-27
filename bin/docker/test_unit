@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+set -o errexit
+set -o nounset
+
 docker compose run -it --rm nest_test -c "bin/node/test_unit $1";

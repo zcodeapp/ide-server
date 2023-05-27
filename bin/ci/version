@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
-# Like this script? 
-# Generate boilerplate for similar ones at https://bashplate.wolfgang-werner.net.
 
-set -o errexit  # exit on error
-set -o nounset  # don't allow unset variables
-# set -o xtrace # enable for debugging
+set -e
+set -o errexit
+set -o nounset
 
 usage() {
   printf "CI get next version\n"

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+set -e
+set -o errexit
+set -o nounset
+
 trap_ctrlc() {
     docker compose stop nest_debug;
     docker compose rm --force nest_debug;
