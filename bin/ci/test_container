@@ -8,16 +8,20 @@ usage() {
   printf "CI Test Container\n"
 
   printf "Usage: bin/ci/test "
-  printf -- "-c <container name> "
+  printf -- "[-i <image name>] "
+  printf -- "[-r <image version>] "
+  printf -- "[-c <container name>] "
   printf -- "[-e <env>] "
   printf -- "[-h] "
   printf -- "[-v] "
   printf "\n"
 
+  printf "  -%s\t%s - %s%s\n" "i" "image" "Image name" ""
+  printf "  -%s\t%s - %s%s\n" "r" "imageversion" "Image version" ""
+  printf "  -%s\t%s - %s%s\n" "c" "container" "Container name" ""
   printf "  -%s\t%s - %s%s\n" "h" "help" "Show this help message." ""
   printf "  -%s\t%s - %s%s\n" "v" "version" "Show version information." ""
   printf "  -%s\t%s - %s%s\n" "e" "env" "Environment" " (default: dev)"
-  printf "  -%s\t%s - %s%s\n" "c" "container" "Container name" ""
 }
 
 version() {
@@ -28,17 +32,21 @@ version() {
 opt_help="false"
 opt_version="false"
 opt_env="development"
-opt_container=""
+opt_image="zcodeapp/ide-server"
+opt_imageversion="latest"
+opt_container="test_container"
 
 # declared functions
 
 # option parsing
-OPTSPEC=:hve:c:mip
+OPTSPEC=:hvi:e:c:mip
 while getopts $OPTSPEC option; do
   case "$option" in
     h ) opt_help="true"; usage; exit 0  ;;
     v ) opt_version="true"; version; exit 0  ;;
     e ) opt_env=$OPTARG;  ;;
+    i ) opt_image=$OPTARG;  ;;
+    r ) opt_imageversion=$OPTARG;  ;;
     c ) opt_container=$OPTARG;  ;;
    \? ) echo "Unknown option: -$OPTARG" >&2; exit 1;;
     : ) echo "Missing option argument for -$OPTARG" >&2; exit 1;;
@@ -56,15 +64,22 @@ if [ -z "$opt_container" ] ; then
   usage
   exit 1
 fi
+if [ -z "$opt_image" ] ; then
+  usage
+  exit 1
+fi
+if [ -z "$opt_imageversion" ] ; then
+  usage
+  exit 1
+fi
 
+docker stop $opt_container -t 0 || echo "Nothing for stop";
 docker container prune -f
-docker run -d --publish=4000:4000 --name=$opt_container zcodeapp/ide-server
+CURRENT_HOST=$(cat /etc/hostname)
+CURRENT_NETWORK=$(docker inspect -f '{{range $networkName, $networkConfig := .NetworkSettings.Networks}}{{ $networkName }} {{end}}' $CURRENT_HOST)
+docker run -d --rm --publish=4000:4000 --network=$CURRENT_NETWORK --name=$opt_container $opt_image:$opt_imageversion
 
 DOCKER_HOSTNAME=$(bin/docker/hostname -c $opt_container)
-
-echo -e "DOCKER_HOSTNAME";
-echo -e $DOCKER_HOSTNAME
-echo -e "-----------";
 
 if [ -z $DOCKER_HOSTNAME ]; then
   echo "docker hostname empty"
@@ -73,6 +88,6 @@ fi
 
 bin/docker/node/online.js $DOCKER_HOSTNAME
 
-docker stop $opt_container;
+docker stop $opt_container -t 0;
 
 exit 0

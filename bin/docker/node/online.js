@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const { exec } = require('child_process');
+const localVersion = require('../../../package.json');
 
 let connected;
 let host = process.argv[2];
@@ -34,52 +35,24 @@ async function _interval() {
     const decoded = JSON.parse(data);
     console.log('[ONLINE] Data received', {
       data,
-      decoded
+      decoded,
+      localVersion: localVersion.version
     });
-    if (decoded.running === true) connected = true;
+    if (decoded.running === true) {
+      console.log('[ONLINE] Data running');
+      if (decoded.version == localVersion.version) {
+        console.log('[ONLINE] Correct version');
+        connected = true;
+      } else {
+        console.log('[ONLINE] Different local version of the image');
+      }
+    }
   });
   if (connected) {
     console.log('[ONLINE] Connected');
     clearInterval(interval);
     process.exit(0);
   }
-  // console.log('stdout:', stdout);
-  // console.log('stderr:', stderr);
-  // try {
-  //   const request = http
-  //     .request({
-  //       method: 'GET',
-  //       host,
-  //       port: 4000
-  //     });
-  //     request.on('connect', () => {
-  //       console.log('[ONLINE] Connected');
-  //     });
-  //     request.on('disconnect', () => {
-  //       console.log('[ONLINE] Disconnect');
-  //     });
-  //     request.on('data', (d) => {
-  //       console.log('[ONLINE] Data');
-  //       d => data += d
-  //     });
-  //     request.on('end', () => {
-  //       clearTimeout(timeout);
-  //       console.log('[ONLINE] Success connect server');
-  //       console.log('[ONLINE] Data:', data);
-  //     });
-  //     request.on('success', () => {
-  //       clearTimeout(timeout);
-  //       console.log('[ONLINE] Success connect server');
-  //       console.log('[ONLINE] Data:', data);
-  //     });
-  //     request.on('error', (e) => {
-  //       console.log('[ONLINE] Error connect server');
-  //       console.log(e);
-  //     });
-  //     request.end();
-  // } catch (e) {
-
-  // }
 }
 
 process.on('uncaughtException', (err) => {});
