@@ -41,7 +41,7 @@ opt_destination="zcodeapp/ide-server"
 # declared functions
 
 # option parsing
-OPTSPEC=:hved:mip
+OPTSPEC=:hvd:e:mip
 while getopts $OPTSPEC option; do
   case "$option" in
     h ) opt_help="true"; usage; exit 0  ;;
