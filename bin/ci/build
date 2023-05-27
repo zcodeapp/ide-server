@@ -56,5 +56,5 @@ if [ -z "$opt_destination" ] ; then
   exit 1
 fi
 
-bin/node/build;
+bin/node/build -e $opt_env;
 bin/docker/image -d $opt_destination;
