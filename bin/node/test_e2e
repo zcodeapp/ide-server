@@ -4,4 +4,4 @@ set -e
 set -o errexit
 set -o nounset
 
-/usr/local/bin/npm run test:e2e $1
+/usr/local/bin/npm run test:e2e
