@@ -4,4 +4,8 @@ set -e
 set -o errexit
 set -o nounset
 
-/usr/local/bin/npm run test:cov $1;
+if [ ! -z $1 ]; then
+    /usr/local/bin/npm run test:cov $1
+else
+    /usr/local/bin/npm run test:cov
+fi
