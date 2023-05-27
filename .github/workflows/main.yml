@@ -30,10 +30,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install
-        run: "VERSION=$INPUT_VERSION bin/ci/install"
+        run: "bin/ci/install"
       - name: Test
         run: "bin/ci/test"
       - name: Build
         run: "bin/ci/build"
       - name: Push
-        run: "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN VERSION=$INPUT_VERSION bin/ci/push"
+        run: "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN bin/ci/push"

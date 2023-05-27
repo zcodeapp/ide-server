@@ -48,8 +48,4 @@ if [ -z "$opt_env" ] ; then
   exit 1
 fi
 
-echo -e "VERSION:"
-echo -e $VERSION
-exit 1;
-
 bin/node/install;
