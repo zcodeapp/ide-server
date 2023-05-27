@@ -77,10 +77,10 @@ docker stop $opt_container -t 0 || echo "Nothing for stop";
 docker container prune -f
 CURRENT_HOST=$(cat /etc/hostname)
 CURRENT_NETWORK=$(docker inspect -f '{{range $networkName, $networkConfig := .NetworkSettings.Networks}}{{ $networkName }} {{end}}' $CURRENT_HOST)
-nohup docker run --publish=4000:4000 --network=$CURRENT_NETWORK --name=$opt_container $opt_image:$opt_imageversion
+nohup docker run --publish=4000:4000 --network=$CURRENT_NETWORK --name=$opt_container $opt_image:$opt_imageversion &
 echo -e 'start sleep'
 #coproc read -t 10 && wait "$!"
-COUNTER=0; while [ $COUNTER -lt 100 ]; do :; let COUNTER=COUNTER+1; done
+COUNTER=0; while [ $COUNTER -lt 10000 ]; do :; let COUNTER=COUNTER+1; done
 echo -e 'end sleep'
 DOCKER_HOSTNAME=$(bin/docker/hostname -c $opt_container)
 
