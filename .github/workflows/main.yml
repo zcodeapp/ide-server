@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    name: Install and test
+    name: Test Project
     runs-on: ubuntu-latest
     environment: development
     container:
@@ -24,7 +24,7 @@ jobs:
       - name: Build
         run: "bin/ci/build -e development"
   build:
-    name: Instal and build container for official image on Docker
+    name: Build container for official image on Docker
     runs-on: ubuntu-latest
     environment: production
     container:
