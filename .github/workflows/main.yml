@@ -3,12 +3,21 @@ on:
   push:
     branches:
       - "main"
+    inputs:
+      version:
+        type: choice
+        required: true
+        description: Version
+        options: 
+        - not
+        - major
+        - minor
+        - patch
 
 jobs:
   build:
     name: Install, test and build container for official image on Docker
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     environment: production
     container:
       image: zcodeapp/node_backend
@@ -21,10 +30,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install
-        run: "bin/ci/install"
+        run: "VERSION=$INPUT_VERSION bin/ci/install"
       - name: Test
         run: "bin/ci/test"
       - name: Build
         run: "bin/ci/build"
       - name: Push
-        run: "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN bin/ci/push"
+        run: "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN VERSION=$INPUT_VERSION bin/ci/push"
