@@ -3,5 +3,3 @@
 /usr/local/bin/npm run format;
 /usr/local/bin/npm run lint;
 /usr/local/bin/npm run build;
-bin/node/test_unit;
-bin/node/test_e2e;

@@ -4,23 +4,17 @@ set -o errexit
 set -o nounset
 
 usage() {
-  printf "CI Build\n"
+  printf "CI Test\n"
 
-  printf "Usage: bin/ci/build "
+  printf "Usage: bin/ci/test "
   printf -- "[-h] "
   printf -- "[-v] "
-  printf -- "-e=< env > "
-  printf -- "[-m] "
-  printf -- "[-i] "
-  printf -- "[-p] "
+  printf -- "-e <env> "
   printf "\n"
 
   printf "  -%s\t%s - %s%s\n" "h" "help" "Show this help message." ""
   printf "  -%s\t%s - %s%s\n" "v" "version" "Show version information." ""
   printf "  -%s\t%s - %s%s\n" "e" "env" "Environment" " (default: dev)"
-  printf "  -%s\t%s - %s%s\n" "m" "major" "Major version" ""
-  printf "  -%s\t%s - %s%s\n" "i" "minor" "Minor version" ""
-  printf "  -%s\t%s - %s%s\n" "p" "patch" "Patch version" ""
 }
 
 version() {
@@ -30,9 +24,6 @@ version() {
 # default values
 opt_help="false"
 opt_version="false"
-opt_major="false"
-opt_minor="false"
-opt_patch="false"
 opt_env="dev"
 
 # declared functions
@@ -44,9 +35,6 @@ while getopts $OPTSPEC option; do
     h ) opt_help="true"; usage; exit 0  ;;
     v ) opt_version="true"; version; exit 0  ;;
     e ) opt_env=$OPTARG;  ;;
-    m ) opt_major="true";  ;;
-    i ) opt_minor="true";  ;;
-    p ) opt_patch="true";  ;;
    \? ) echo "Unknown option: -$OPTARG" >&2; exit 1;;
     : ) echo "Missing option argument for -$OPTARG" >&2; exit 1;;
     * ) echo "Unimplemented option: -$OPTARG" >&2; exit 1;;
@@ -60,21 +48,4 @@ if [ -z "$opt_env" ] ; then
   exit 1
 fi
 
-FLAGS=""
-if [ "$opt_major" == "true" ]; then
-    FLAGS="$FLAGS -m"
-fi
-if [ "$opt_minor" == "true" ]; then
-    FLAGS="$FLAGS -i"
-fi
-if [ "$opt_patch" == "true" ]; then
-    FLAGS="$FLAGS -p"
-fi
-
-VERSION=$(bin/ci/version -s docker/versions/ide-server $FLAGS)
-sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" "package.json"
-
-bin/node/build;
-bin/docker/image -d zcodeapp/ide-server;
-bin/docker/login;
-bin/docker/push -i zcodeapp/ide-server -t $VERSION -u;
+bin/node/install;
