@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: Build ZCodeApp to Docker
+    name: Install, test and build container for official image on Docker
     runs-on: ubuntu-latest
     environment: development
     container:
@@ -24,4 +24,6 @@ jobs:
       - name: Test
         run: "bin/ci/test"
       - name: Build
-        run: "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN bin/ci/build"
+        run: "bin/ci/build"
+      - name: Push
+        run: "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN bin/ci/push"
