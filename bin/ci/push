@@ -4,9 +4,9 @@ set -o errexit
 set -o nounset
 
 usage() {
-  printf "CI Build\n"
+  printf "CI Push\n"
 
-  printf "Usage: bin/ci/build "
+  printf "Usage: bin/ci/push "
   printf -- "[-h] "
   printf -- "[-v] "
   printf -- "-e <env> "
@@ -35,7 +35,7 @@ opt_version="false"
 opt_major="false"
 opt_minor="false"
 opt_patch="false"
-opt_env="dev"
+opt_env="development"
 opt_destination="zcodeapp/ide-server"
 
 # declared functions

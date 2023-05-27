@@ -4,9 +4,9 @@ set -o errexit
 set -o nounset
 
 usage() {
-  printf "CI Test\n"
+  printf "CI Install\n"
 
-  printf "Usage: bin/ci/test "
+  printf "Usage: bin/ci/install "
   printf -- "[-h] "
   printf -- "[-v] "
   printf -- "-e <env> "
@@ -24,7 +24,7 @@ version() {
 # default values
 opt_help="false"
 opt_version="false"
-opt_env="dev"
+opt_env="development"
 
 # declared functions
 
@@ -48,4 +48,4 @@ if [ -z "$opt_env" ] ; then
   exit 1
 fi
 
-bin/node/install;
+bin/node/install -e $opt_env;

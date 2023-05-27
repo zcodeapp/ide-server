@@ -24,7 +24,7 @@ version() {
 # default values
 opt_help="false"
 opt_version="false"
-opt_env="dev"
+opt_env="development"
 
 # declared functions
 

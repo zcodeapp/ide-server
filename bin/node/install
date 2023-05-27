@@ -1,3 +1,56 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-/usr/local/bin/npm install
+set -o errexit
+set -o nounset
+
+usage() {
+  printf "Node Install\n"
+
+  printf "Usage: bin/node/install "
+  printf -- "[-h] "
+  printf -- "[-v] "
+  printf -- "-e <env> "
+  printf "\n"
+
+  printf "  -%s\t%s - %s%s\n" "h" "help" "Show this help message." ""
+  printf "  -%s\t%s - %s%s\n" "v" "version" "Show version information." ""
+  printf "  -%s\t%s - %s%s\n" "e" "env" "Environment" " (default: dev)"
+}
+
+version() {
+  printf "0.0.1\n"
+}
+
+# default values
+opt_help="false"
+opt_version="false"
+opt_env="development"
+
+# declared functions
+
+# option parsing
+OPTSPEC=:hve:mip
+while getopts $OPTSPEC option; do
+  case "$option" in
+    h ) opt_help="true"; usage; exit 0  ;;
+    v ) opt_version="true"; version; exit 0  ;;
+    e ) opt_env=$OPTARG;  ;;
+   \? ) echo "Unknown option: -$OPTARG" >&2; exit 1;;
+    : ) echo "Missing option argument for -$OPTARG" >&2; exit 1;;
+    * ) echo "Unimplemented option: -$OPTARG" >&2; exit 1;;
+  esac
+done
+shift $((OPTIND - 1))
+
+# required option validation
+if [ -z "$opt_env" ] ; then
+  usage
+  exit 1
+fi
+
+ARGS=""
+if [ "$opt_env" == "development" ]; then
+  ARGS="$ARGS --save-dev"
+fi
+
+/bin/bash -c "/usr/local/bin/npm install $ARGS"

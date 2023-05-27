@@ -5,8 +5,26 @@ on:
       - "main"
 
 jobs:
+  test:
+    name: Install and test container for official image on Docker
+    runs-on: ubuntu-latest
+    environment: development
+    container:
+      image: zcodeapp/node_backend
+      options: --user root
+    env:
+      NODE_ENV: development
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install
+        run: "bin/ci/install -e development"
+      - name: Test
+        run: "bin/ci/test -e development"
+      - name: Build
+        run: "bin/ci/build -e development"
   build:
-    name: Install, test and build container for official image on Docker
+    name: Instal and build container for official image on Docker
     runs-on: ubuntu-latest
     environment: production
     container:
@@ -19,24 +37,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Cache node modules
-        id: cache-npm
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          path: |
-            ~/.cache
-            ~/.npm
-            /var/www/node_modules
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       - name: Install
-        run: "bin/ci/install"
-      - name: Test
-        run: "bin/ci/test"
+        run: "bin/ci/install -e production"
       - name: Build
-        run: "bin/ci/build"
+        run: "bin/ci/build -e production"
       - name: Push
-        run: "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN bin/ci/push"
+        run: "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN bin/ci/push -e production"
