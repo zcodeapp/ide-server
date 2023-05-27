@@ -8,6 +8,7 @@ jobs:
   build:
     name: Build ZCodeApp to Docker
     runs-on: ubuntu-latest
+    environment: development
     container:
       image: zcodeapp/node_backend
       options: --user root
