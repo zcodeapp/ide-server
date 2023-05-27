@@ -8,7 +8,7 @@ jobs:
   build:
     name: Install, test and build container for official image on Docker
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     environment: production
     container:
       image: zcodeapp/node_backend
