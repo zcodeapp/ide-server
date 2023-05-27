@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    name: Install and test container for official image on Docker
+    name: Install and test
     runs-on: ubuntu-latest
     environment: development
     container:
