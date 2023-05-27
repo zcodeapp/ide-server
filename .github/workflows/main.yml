@@ -19,12 +19,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Cache Node packages
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache
-            /var/www/node_modules
       - name: Install
         run: "bin/ci/install"
       - name: Test
