@@ -1,7 +1,7 @@
 import { Logger, Module } from "@nestjs/common";
 import { ApiController } from "./api.controller";
 import { ApiService } from "./api.service";
-import { Package } from "src/utils/package/package";
+import { Package } from "../utils/package/package";
 
 @Module({
   controllers: [
