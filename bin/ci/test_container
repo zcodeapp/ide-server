@@ -89,8 +89,8 @@ if [ -z $DOCKER_HOSTNAME ]; then
   exit 1
 fi
 
-bin/docker/node/online.js $DOCKER_HOSTNAME
+#bin/docker/node/online.js $DOCKER_HOSTNAME
 
-docker stop $opt_container -t 0;
+#docker stop $opt_container -t 0;
 
 exit 0
