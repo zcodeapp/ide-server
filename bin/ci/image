@@ -4,17 +4,19 @@ set -o errexit
 set -o nounset
 
 usage() {
-  printf "CI Build\n"
+  printf "CI Image\n"
 
-  printf "Usage: bin/ci/build "
+  printf "Usage: bin/ci/image "
   printf -- "[-h] "
   printf -- "[-v] "
   printf -- "-e <env> "
+  printf -- "[-d <image destination name>] "
   printf "\n"
 
   printf "  -%s\t%s - %s%s\n" "h" "help" "Show this help message." ""
   printf "  -%s\t%s - %s%s\n" "v" "version" "Show version information." ""
   printf "  -%s\t%s - %s%s\n" "e" "env" "Environment" " (default: dev)"
+  printf "  -%s\t%s - %s%s\n" "d" "destination" "Image name destination" " (default: zcodeapp/ide-server)"
 }
 
 version() {
@@ -25,16 +27,18 @@ version() {
 opt_help="false"
 opt_version="false"
 opt_env="development"
+opt_destination="zcodeapp/ide-server"
 
 # declared functions
 
 # option parsing
-OPTSPEC=:hve:mip
+OPTSPEC=:hvd:e:mip
 while getopts $OPTSPEC option; do
   case "$option" in
     h ) opt_help="true"; usage; exit 0  ;;
     v ) opt_version="true"; version; exit 0  ;;
     e ) opt_env=$OPTARG;  ;;
+    d ) opt_destination=$OPTARG;  ;;
    \? ) echo "Unknown option: -$OPTARG" >&2; exit 1;;
     : ) echo "Missing option argument for -$OPTARG" >&2; exit 1;;
     * ) echo "Unimplemented option: -$OPTARG" >&2; exit 1;;
@@ -47,5 +51,9 @@ if [ -z "$opt_env" ] ; then
   usage
   exit 1
 fi
+if [ -z "$opt_destination" ] ; then
+  usage
+  exit 1
+fi
 
-bin/node/build -e $opt_env;
+bin/docker/image -d $opt_destination;

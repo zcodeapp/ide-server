@@ -41,5 +41,7 @@ jobs:
         run: "bin/ci/install -e production"
       - name: Build
         run: "bin/ci/build -e production"
+      - name: Image
+        run: "bin/ci/image -e production -d zcodeapp/ide-server"
       - name: Push
         run: "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN bin/ci/push -e production"
