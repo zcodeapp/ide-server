@@ -22,13 +22,10 @@ jobs:
         id: cache-install
         uses: actions/cache/save@v3
         with:
-          path: node_modules
+          path: .
           key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
       - name: List content
         run: ls -la . && echo $PWD
-
-
-        
   test_unit:
     name: Test Unit
     runs-on: ubuntu-latest
@@ -41,13 +38,11 @@ jobs:
     env:
       NODE_ENV: development
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Cache
+      - name: Restore Cache
         id: cache-install
         uses: actions/cache/restore@v3
         with:
-          path: node_modules
+          path: .
           key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
       - name: List content
         run: ls -la . && echo $PWD
@@ -67,11 +62,11 @@ jobs:
       NODE_ENV: development
     steps:
       - name: Restore Cache
-        id: cache-restore
-        uses: actions/cache/save@v3
+        id: cache-install
+        uses: actions/cache/restore@v3
         with:
-          path: /var/www
-          key: ${{ runner.os }}-test-e2e
+          path: .
+          key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
       - name: Test
         run: "bin/ci/test_e2e -e development"
   test_container:
@@ -88,11 +83,11 @@ jobs:
       NODE_ENV: development
     steps:
       - name: Restore Cache
-        id: cache-restore
-        uses: actions/cache/save@v3
+        id: cache-install
+        uses: actions/cache/restore@v3
         with:
-          path: /var/www
-          key: ${{ runner.os }}-test-container
+          path: .
+          key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
       - name: Image
         run: "bin/ci/image -e development -d zcodeapp/ide-server"
       - name: Start ZCode APP IDE Server
@@ -116,10 +111,10 @@ jobs:
       DOCKERHUB_ACCESS_TOKEN: '${{ secrets.DOCKERHUB_ACCESS_TOKEN }}'
     steps:
       - name: Restore Cache
-        id: cache-restore
-        uses: actions/cache/save@v3
+        id: cache-install
+        uses: actions/cache/restore@v3
         with:
-          path: /var/www
-          key: ${{ runner.os }}-build
+          path: .
+          key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
       - name: Push
         run: "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN bin/ci/push -e production"
