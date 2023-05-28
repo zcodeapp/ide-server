@@ -49,7 +49,7 @@ jobs:
       - name: Test
         run: "bin/ci/test_unit -e development"
   test_e2e:
-    name: Test Unit
+    name: Test e2e
     runs-on: ubuntu-latest
     needs:
     - install
@@ -71,7 +71,7 @@ jobs:
       - name: Test
         run: "bin/ci/test_e2e -e development"
   test_container:
-    name: Test Unit
+    name: Test Container
     runs-on: ubuntu-latest
     needs:
     - install
