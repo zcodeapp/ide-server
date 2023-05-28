@@ -41,7 +41,7 @@ jobs:
     env:
       NODE_ENV: development
     steps:
-      - name: Restore Cache
+      - name: Restore Install
         id: cache-install
         uses: actions/cache/restore@v3
         with:
@@ -64,7 +64,7 @@ jobs:
     env:
       NODE_ENV: development
     steps:
-      - name: Restore Cache
+      - name: Restore Install
         id: cache-install
         uses: actions/cache/restore@v3
         with:
@@ -85,7 +85,7 @@ jobs:
     env:
       NODE_ENV: development
     steps:
-      - name: Restore Cache
+      - name: Restore Install
         id: cache-install
         uses: actions/cache/restore@v3
         with:
@@ -114,7 +114,13 @@ jobs:
     env:
       NODE_ENV: development
     steps:
-      - name: Restore Cache
+      - name: Restore Install
+        id: cache-install
+        uses: actions/cache/restore@v3
+        with:
+          path: .
+          key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
+      - name: Restore Image
         id: cache-image
         uses: actions/cache/restore@v3
         with:
@@ -149,7 +155,7 @@ jobs:
       DOCKERHUB_USERNAME: '${{ secrets.DOCKERHUB_USERNAME }}'
       DOCKERHUB_ACCESS_TOKEN: '${{ secrets.DOCKERHUB_ACCESS_TOKEN }}'
     steps:
-      - name: Restore Cache
+      - name: Restore Install
         id: cache-install
         uses: actions/cache/restore@v3
         with:
