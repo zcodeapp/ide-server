@@ -91,8 +91,16 @@ jobs:
         with:
           path: .
           key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
-      - name: Image
+      - name: Create Image
         run: "bin/ci/image -e development -d zcodeapp/ide-server"
+      - name: Save Image
+        run: mkdir images && docker image save --output images/zcodeapp-ide-server.tar zcodeapp/ide-server
+      - name: Cache Image
+        id: cache-image
+        uses: actions/cache/save@v3
+        with:
+          path: images
+          key: ${{ runner.os }}-image-${{ hashFiles('package.json') }}
 
   test_container:
     name: Test Container
@@ -107,11 +115,13 @@ jobs:
       NODE_ENV: development
     steps:
       - name: Restore Cache
-        id: cache-install
+        id: cache-image
         uses: actions/cache/restore@v3
         with:
-          path: .
-          key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
+          path: images
+          key: ${{ runner.os }}-image-${{ hashFiles('package.json') }}
+      - name: Import Image
+        run: docker image load -i images/zcodeapp-ide-server.tar
       - name: Start ZCode APP IDE Server
         uses: zcodeapp/ide-server-github-action@1.0.1
       - name: Test Image
