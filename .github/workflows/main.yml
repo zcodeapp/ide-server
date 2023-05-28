@@ -22,10 +22,13 @@ jobs:
         id: cache-install
         uses: actions/cache/save@v3
         with:
-          path: ~/.npm
+          path: node_modules
           key: ${{ runner.os }}-install
       - name: List content
         run: ls -la . && echo $PWD
+
+
+        
   test_unit:
     name: Test Unit
     runs-on: ubuntu-latest
@@ -44,8 +47,8 @@ jobs:
         id: cache-restore
         uses: actions/cache/save@v3
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-test-unit
+          path: node_modules
+          key: ${{ runner.os }}-install
       - name: List content
         run: ls -la . && echo $PWD
       - name: Test
