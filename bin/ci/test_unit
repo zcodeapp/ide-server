@@ -7,7 +7,7 @@ set -o nounset
 usage() {
   printf "CI Test\n"
 
-  printf "Usage: bin/ci/test "
+  printf "Usage: bin/ci/test_unit "
   printf -- "[-h] "
   printf -- "[-v] "
   printf -- "-e <env> "
@@ -50,4 +50,3 @@ if [ -z "$opt_env" ] ; then
 fi
 
 bin/node/test_unit;
-bin/node/test_e2e;
