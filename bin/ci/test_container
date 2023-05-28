@@ -81,6 +81,7 @@ docker ps -a
 echo -e "Images"
 docker images
 
+
 echo "get hostname"
 DOCKER_HOSTNAME=$(bin/docker/hostname -c $opt_container)
 echo "finish get hostname"
