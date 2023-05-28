@@ -22,9 +22,7 @@ jobs:
         id: cache-install
         uses: actions/cache/save@v3
         with:
-          path: |
-            ~/.cache
-            .
+          path: /var/www
           key: ${{ runner.os }}-install
   test_unit:
     name: Test Unit
@@ -42,9 +40,7 @@ jobs:
         id: cache-restore
         uses: actions/cache/save@v3
         with:
-          path: |
-            ~/.cache
-            .
+          path: /var/www
           key: ${{ runner.os }}-test-unit
           restore-keys: ${{ runner.os }}-install
       - name: List content
@@ -68,9 +64,7 @@ jobs:
         id: cache-restore
         uses: actions/cache/save@v3
         with:
-          path: |
-            ~/.cache
-            .
+          path: /var/www
           key: ${{ runner.os }}-test-e2e
       - name: Test
         run: "bin/ci/test_e2e -e development"
@@ -91,9 +85,7 @@ jobs:
         id: cache-restore
         uses: actions/cache/save@v3
         with:
-          path: |
-            ~/.cache
-            .
+          path: /var/www
           key: ${{ runner.os }}-test-container
       - name: Image
         run: "bin/ci/image -e development -d zcodeapp/ide-server"
@@ -121,9 +113,7 @@ jobs:
         id: cache-restore
         uses: actions/cache/save@v3
         with:
-          path: |
-            ~/.cache
-            .
+          path: /var/www
           key: ${{ runner.os }}-build
       - name: Push
         run: "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN bin/ci/push -e production"
