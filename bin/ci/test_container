@@ -82,6 +82,7 @@ fi
 #  exit 1
 #fi
 
+docker ps
 DOCKER_HOSTNAME="localhost"
 
 echo "start test"
