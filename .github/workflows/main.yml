@@ -23,7 +23,7 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-install
+          key: ${{ runner.os }}-install-node
       - name: List content
         run: ls -la . && echo $PWD
 
@@ -43,12 +43,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Restore Cache
-        id: cache-restore
+      - name: Cache
+        id: cache-install
         uses: actions/cache/save@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-test-unit
+          key: ${{ runner.os }}-install-node
       - name: List content
         run: ls -la . && echo $PWD
       - name: Test
