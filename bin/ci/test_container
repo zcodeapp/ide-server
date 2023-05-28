@@ -80,10 +80,11 @@ echo -e "Containers all"
 docker ps -a
 echo -e "Images"
 docker images
-
+echo -e "docker ps aqf"
+docker ps -aqf "name=$opt_container"
 
 echo "get hostname"
-DOCKER_HOSTNAME=$(bin/docker/hostname -c $opt_container)
+DOCKER_HOSTNAME=$(docker ps -aqf "name=$opt_container")
 echo "finish get hostname"
 
 if [ -z $DOCKER_HOSTNAME ]; then
