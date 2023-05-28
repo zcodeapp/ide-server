@@ -73,20 +73,6 @@ if [ -z "$opt_imageversion" ] ; then
   exit 1
 fi
 
-#docker stop $opt_container -t 0 || echo "Nothing for stop";
-#docker container prune -f
-
-
-#CURRENT_HOST=$(cat /etc/hostname)
-#CURRENT_NETWORK=$(docker inspect -f '{{range $networkName, $networkConfig := .NetworkSettings.Networks}}{{ $networkName }} {{end}}' $CURRENT_HOST)
-
-#nohup docker run --publish=4000:4000 --network=$CURRENT_NETWORK --name=$opt_container $opt_image:$opt_imageversion &
-#echo -e 'start sleep'
-#coproc read -t 10 && wait "$!"
-#COUNTER=0; while [ $COUNTER -lt 100000 ]; do :; let COUNTER=COUNTER+1; echo -n "." done
-#echo -e 'end sleep'
-
-
 DOCKER_HOSTNAME=$(bin/docker/hostname -c $opt_container)
 
 if [ -z $DOCKER_HOSTNAME ]; then
@@ -94,7 +80,9 @@ if [ -z $DOCKER_HOSTNAME ]; then
   exit 1
 fi
 
+echo "start test"
 bin/docker/node/online.js $DOCKER_HOSTNAME
+echo "End test"
 
 #docker stop $opt_container -t 0;
 
