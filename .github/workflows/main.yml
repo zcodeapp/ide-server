@@ -150,7 +150,7 @@ jobs:
       - name: Image Tag
         run: docker tag zcodeapp/ide-server:latest zcodeapp/ide-server:test_version
       - name: Start ZCode APP IDE Server
-        uses: zcodeapp/ide-server-github-action@1.0.5
+        uses: zcodeapp/ide-server-github-action@1.0.6
         with:
           ide-server-version: test_version
       - name: Test Image
@@ -160,10 +160,8 @@ jobs:
     name: Build container for official image on Docker
     runs-on: ubuntu-latest
     needs:
-    - install
     - test_unit
     - test_e2e
-    - image
     - test_container
     environment: production
     container:
