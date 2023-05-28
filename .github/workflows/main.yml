@@ -122,8 +122,12 @@ jobs:
           key: ${{ runner.os }}-image-${{ hashFiles('package.json') }}
       - name: Import Image
         run: docker image load -i images/zcodeapp-ide-server.tar
+      - name: Image Tag
+        run: docker tag zcodeapp/ide-server:latest zcodeapp/ide-server:test_version
       - name: Start ZCode APP IDE Server
-        uses: zcodeapp/ide-server-github-action@1.0.1
+        uses: zcodeapp/ide-server-github-action@1.0.2
+        with:
+          ide-server-version: test_version
       - name: Test Image
         run: "bin/ci/test_container -e development"
 

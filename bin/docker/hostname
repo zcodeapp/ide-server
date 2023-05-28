@@ -52,8 +52,8 @@ fi
 DOCKER_CONTAINER_ID=$(docker ps -aqf "name=$opt_container")
 DOCKER_CONTAINER_HOSTNAME=$(/bin/bash -c "docker exec -it --user=root $DOCKER_CONTAINER_ID /bin/bash -c \"hostname -i\"")
 
+echo $DOCKER_CONTAINER_HOSTNAME
+
 if [ -z $DOCKER_CONTAINER_HOSTNAME ]; then
   exit 1;
 fi
-
-echo $DOCKER_CONTAINER_HOSTNAME
