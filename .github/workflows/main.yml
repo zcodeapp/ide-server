@@ -41,6 +41,7 @@ jobs:
       - name: Restore Cache
         id: cache-restore
         uses: actions/cache/save@v3
+        with:
           path: |
             ~/.cache
             .
@@ -63,6 +64,7 @@ jobs:
       - name: Restore Cache
         id: cache-restore
         uses: actions/cache/save@v3
+        with:
           path: |
             ~/.cache
             .
@@ -84,6 +86,7 @@ jobs:
       - name: Restore Cache
         id: cache-restore
         uses: actions/cache/save@v3
+        with:
           path: |
             ~/.cache
             .
@@ -117,6 +120,6 @@ jobs:
           path: |
             ~/.cache
             .
-          key: ${{ runner.os }}-install
+          key: ${{ runner.os }}-build
       - name: Push
         run: "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN bin/ci/push -e production"
