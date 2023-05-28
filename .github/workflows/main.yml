@@ -53,7 +53,7 @@ jobs:
       - name: Image
         run: "bin/ci/image -e development -d zcodeapp/ide-server"
       - name: Start ZCode APP IDE Server
-        uses: zcodeapp/ide-server-github-action@1.0.0
+        uses: zcodeapp/ide-server-github-action@1.0.1
       - name: Test Image
         run: "bin/ci/test_container -e development"
   build:
