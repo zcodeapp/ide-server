@@ -24,6 +24,9 @@ jobs:
         run: "bin/ci/build -e development"
       - name: Image
         run: "bin/ci/image -e development -d zcodeapp/ide-server"
+      - name: Run Image
+        using: 'docker'
+        image: 'test/github/Dockerfile'
       - name: Test Image
         run: "bin/ci/test_container -e development"
   build:

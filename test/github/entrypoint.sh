@@ -5,9 +5,9 @@ set -o errexit
 set -o nounset
 
 usage() {
-  printf "CI Test Container\n"
+  printf "CI Start Container\n"
 
-  printf "Usage: bin/ci/test_container "
+  printf "Usage: entrypoint.sh "
   printf -- "[-i <image name>] "
   printf -- "[-r <image version>] "
   printf -- "[-c <container name>] "
@@ -72,30 +72,6 @@ if [ -z "$opt_imageversion" ] ; then
   usage
   exit 1
 fi
-
-#docker stop $opt_container -t 0 || echo "Nothing for stop";
-#docker container prune -f
-
-
-#CURRENT_HOST=$(cat /etc/hostname)
-#CURRENT_NETWORK=$(docker inspect -f '{{range $networkName, $networkConfig := .NetworkSettings.Networks}}{{ $networkName }} {{end}}' $CURRENT_HOST)
-
-#nohup docker run --publish=4000:4000 --network=$CURRENT_NETWORK --name=$opt_container $opt_image:$opt_imageversion &
-#echo -e 'start sleep'
-#coproc read -t 10 && wait "$!"
-#COUNTER=0; while [ $COUNTER -lt 100000 ]; do :; let COUNTER=COUNTER+1; echo -n "." done
-#echo -e 'end sleep'
-
-
-DOCKER_HOSTNAME=$(bin/docker/hostname -c $opt_container)
-
-if [ -z $DOCKER_HOSTNAME ]; then
-  echo "docker hostname empty"
-  exit 1
-fi
-
-bin/docker/node/online.js $DOCKER_HOSTNAME
-
-#docker stop $opt_container -t 0;
-
-exit 0
+# --network=$CURRENT_NETWORK
+docker run --detach --publish=4000:4000 --name=$opt_container $opt_image:$opt_imageversion
+echo "Success run container [$opt_container - $opt_image:$opt_imageversion]"
