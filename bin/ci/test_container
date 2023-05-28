@@ -74,8 +74,12 @@ if [ -z "$opt_imageversion" ] ; then
 fi
 
 echo -e "Container to get: $opt_container"
+echo -e "Containers active"
 docker ps
+echo -e "Containers all"
 docker ps -a
+echo -e "Images"
+docker images
 
 echo "get hostname"
 DOCKER_HOSTNAME=$(bin/docker/hostname -c $opt_container)
