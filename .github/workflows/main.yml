@@ -23,7 +23,7 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-install-${{ hashFiles('**/package.json') }}
+          key: ${{ runner.os }}-install-${{ hashFiles('package-lock.json') }}
       - name: List content
         run: ls -la . && echo $PWD
 
@@ -48,7 +48,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-install-${{ hashFiles('**/package.json') }}
+          key: ${{ runner.os }}-install-${{ hashFiles('package-lock.json') }}
       - name: List content
         run: ls -la . && echo $PWD
       - name: Test
