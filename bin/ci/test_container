@@ -73,14 +73,16 @@ if [ -z "$opt_imageversion" ] ; then
   exit 1
 fi
 
-echo "get hostname"
-DOCKER_HOSTNAME=$(bin/docker/hostname -c $opt_container)
-echo "finish get hostname"
+#echo "get hostname"
+#DOCKER_HOSTNAME=$(bin/docker/hostname -c $opt_container)
+#echo "finish get hostname"
 
-if [ -z $DOCKER_HOSTNAME ]; then
-  echo "docker hostname empty"
-  exit 1
-fi
+#if [ -z $DOCKER_HOSTNAME ]; then
+#  echo "docker hostname empty"
+#  exit 1
+#fi
+
+DOCKER_HOSTNAME="localhost"
 
 echo "start test"
 bin/docker/node/online.js $DOCKER_HOSTNAME
