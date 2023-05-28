@@ -21,8 +21,10 @@ jobs:
       - name: Cache
         id: cache-install
         uses: actions/cache/save@v3
+      - name: Current directory
+        run: echo $PWD
       - name: List content
-        run: ls -la . && echo $PWD
+        run: ls -la .
         with:
           path: /var/www
           key: ${{ runner.os }}-install
@@ -45,8 +47,10 @@ jobs:
           path: /var/www
           key: ${{ runner.os }}-test-unit
           restore-keys: ${{ runner.os }}-install
+      - name: Current directory
+        run: echo $PWD
       - name: List content
-        run: ls -la . && echo $PWD
+        run: ls -la .
       - name: Test
         run: "bin/ci/test_unit -e development"
   test_e2e:
