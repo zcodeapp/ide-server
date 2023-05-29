@@ -122,10 +122,11 @@ jobs:
           key: ${{ runner.os }}-image-${{ hashFiles('package.json') }}
 
   test_container:
-    name: Test Container
+    name: Test e2e Container
     runs-on: ubuntu-latest
     needs:
     - image
+    - test_e2e
     environment: development
     container:
       image: zcodeapp/node_backend
