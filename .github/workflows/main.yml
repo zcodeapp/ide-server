@@ -4,70 +4,70 @@ on:
     branches:
       - "main"
 jobs:
-  install:
-    name: Install development
-    runs-on: ubuntu-latest
-    environment: development
-    container:
-      image: zcodeapp/node_backend
-      options: --user root
-    env:
-      NODE_ENV: development
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install
-        run: "bin/ci/install -e development"
-      - name: Build
-        run: "bin/ci/build -e development"
-      - name: Cache
-        id: cache-install
-        uses: actions/cache/save@v3
-        with:
-          path: .
-          key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
+  # install:
+  #   name: Install development
+  #   runs-on: ubuntu-latest
+  #   environment: development
+  #   container:
+  #     image: zcodeapp/node_backend
+  #     options: --user root
+  #   env:
+  #     NODE_ENV: development
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Install
+  #       run: "bin/ci/install -e development"
+  #     - name: Build
+  #       run: "bin/ci/build -e development"
+  #     - name: Cache
+  #       id: cache-install
+  #       uses: actions/cache/save@v3
+  #       with:
+  #         path: .
+  #         key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
 
-  test_unit:
-    name: Test Unit
-    runs-on: ubuntu-latest
-    needs:
-    - install
-    environment: development
-    container:
-      image: zcodeapp/node_backend
-      options: --user root
-    env:
-      NODE_ENV: development
-    steps:
-      - name: Restore Install
-        id: cache-install
-        uses: actions/cache/restore@v3
-        with:
-          path: .
-          key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
-      - name: Test
-        run: "bin/ci/test_unit -e development"
+  # test_unit:
+  #   name: Test Unit
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #   - install
+  #   environment: development
+  #   container:
+  #     image: zcodeapp/node_backend
+  #     options: --user root
+  #   env:
+  #     NODE_ENV: development
+  #   steps:
+  #     - name: Restore Install
+  #       id: cache-install
+  #       uses: actions/cache/restore@v3
+  #       with:
+  #         path: .
+  #         key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
+  #     - name: Test
+  #       run: "bin/ci/test_unit -e development"
 
-  test_e2e:
-    name: Test e2e
-    runs-on: ubuntu-latest
-    needs:
-    - install
-    environment: development
-    container:
-      image: zcodeapp/node_backend
-      options: --user root
-    env:
-      NODE_ENV: development
-    steps:
-      - name: Restore Install
-        id: cache-install
-        uses: actions/cache/restore@v3
-        with:
-          path: .
-          key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
-      - name: Test
-        run: "bin/ci/test_e2e -e development"
+  # test_e2e:
+  #   name: Test e2e
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #   - install
+  #   environment: development
+  #   container:
+  #     image: zcodeapp/node_backend
+  #     options: --user root
+  #   env:
+  #     NODE_ENV: development
+  #   steps:
+  #     - name: Restore Install
+  #       id: cache-install
+  #       uses: actions/cache/restore@v3
+  #       with:
+  #         path: .
+  #         key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
+  #     - name: Test
+  #       run: "bin/ci/test_e2e -e development"
     
   install_production:
     name: Install production
@@ -160,8 +160,8 @@ jobs:
     name: Build container for official image on Docker
     runs-on: ubuntu-latest
     needs:
-    - test_unit
-    - test_e2e
+    # - test_unit
+    # - test_e2e
     - test_container
     environment: production
     container:

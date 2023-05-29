@@ -74,10 +74,12 @@ if [ -z "$opt_imageversion" ] ; then
 fi
 
 docker ps -a
-docekr images
+docker images
 
 DOCKER_CONTAINER_ID=$(docker ps -aqf "name=$opt_container")
 DOCKER_HOSTNAME=$(docker exec --user=root $DOCKER_CONTAINER_ID /bin/bash -c "hostname -i")
+
+docker exec $DOCKER_CONTAINER_ID /bin/bash -c "curl -X GET http://localhost:4000"
 
 bin/docker/node/online.js $DOCKER_HOSTNAME
 
