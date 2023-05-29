@@ -81,7 +81,6 @@ if [ "$opt_patch" == "true" ]; then
 fi
 
 VERSION=$(bin/ci/version -s docker/versions/ide-server $FLAGS)
-sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" "package.json"
 
 bin/docker/login;
 bin/docker/push -i $opt_destination -t $VERSION -u;

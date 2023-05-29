@@ -88,6 +88,7 @@ if [ "$opt_patch" == "true" ]; then
 fi
 
 NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+sed -i "s/\"version\": \".*\"/\"version\": \"$NEW_VERSION\"/" "package.json"
 
 echo "$NEW_VERSION" > $opt_source
 echo $NEW_VERSION
