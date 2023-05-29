@@ -83,11 +83,15 @@ docker images
 echo -e "docker ps aqf"
 docker ps -aqf "name=$opt_container"
 
-echo "get hostname"
 DOCKER_CONTAINER_ID=$(docker ps -aqf "name=$opt_container")
-#docker exec --help
+echo "start hostname help"
+docker exec -t --user=root $DOCKER_CONTAINER_ID /bin/bash -c "hostname --help"
+echo "end hostname help"
 DOCKER_HOSTNAME=$(docker exec -t --user=root $DOCKER_CONTAINER_ID /bin/bash -c "cat /etc/hostname")
-echo "finish get hostname"
+
+echo "curl start"
+curl -X GET http://$DOCKER_HOSTNAME:4000
+echo "curl end"
 
 if [ -z $DOCKER_HOSTNAME ]; then
   echo "docker hostname empty"
