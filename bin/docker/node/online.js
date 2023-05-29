@@ -2,6 +2,7 @@
 
 const { exec } = require('child_process');
 const localVersion = require('../../../package.json');
+const axios = require('axios').default;
 
 let connected;
 let host = process.argv[2];
@@ -15,7 +16,7 @@ host = host
   .replace("\r", '')
   .replace("\n", '')
 
-let timeout = setTimeout(_timeout, 5000);
+let timeout = setTimeout(_timeout, 10000);
 let interval = setInterval(_interval, 1000);
 
 function _timeout() {
@@ -28,29 +29,20 @@ async function _interval() {
   console.log('[ONLINE] Try connect server', {
     host
   });
-  let data = '';
-  const child = await exec(`curl -X GET http://${host}:4000/`);
-  child.stdout.on('data', _ => data += _);
-  child.on('close', () => {
-    const decoded = JSON.parse(data);
-    console.log('[ONLINE] Data received', {
-      data,
-      decoded,
-      localVersion: localVersion.version
-    });
-    if (decoded.running === true) {
-      console.log('[ONLINE] Data running');
+  axios.get(`http://${host}:4000/`)
+    .then(r => {
+      const decoded = JSON.parse(r.data);
       if (decoded.version == localVersion.version) {
         console.log('[ONLINE] Correct version');
         connected = true;
       } else {
         console.log('[ONLINE] Different local version of the image');
       }
-    }
-  });
+    })
   if (connected) {
     console.log('[ONLINE] Connected');
     clearInterval(interval);
+    clearTimeout(timeout);
     process.exit(0);
   }
 }
