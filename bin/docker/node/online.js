@@ -31,7 +31,10 @@ async function _interval() {
   });
   axios.get(`http://${host}:4000/`)
     .then(r => {
-      const decoded = JSON.parse(r.data);
+      const decoded = r.data;
+      console.log('[ONLINE] Incoming data', {
+        decoded
+      })
       if (decoded.version == localVersion.version) {
         console.log('[ONLINE] Correct version');
         connected = true;
