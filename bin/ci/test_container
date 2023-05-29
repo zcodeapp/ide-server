@@ -85,7 +85,9 @@ docker ps -aqf "name=$opt_container"
 
 echo "get hostname"
 DOCKER_CONTAINER_ID=$(docker ps -aqf "name=$opt_container")
+
 docker exec --help
+
 DOCKER_HOSTNAME=$(docker exec -it --user=root $DOCKER_CONTAINER_ID /bin/bash -c "hostname -i")
 echo "finish get hostname"
 
