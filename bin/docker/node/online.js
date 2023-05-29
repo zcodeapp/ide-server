@@ -55,4 +55,6 @@ async function _interval() {
   }
 }
 
-process.on('uncaughtException', (err) => {});
+process.on('uncaughtException', (err) => {
+  console.log(err)
+});
