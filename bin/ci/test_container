@@ -73,6 +73,9 @@ if [ -z "$opt_imageversion" ] ; then
   exit 1
 fi
 
+docker ps -a
+docekr images
+
 DOCKER_CONTAINER_ID=$(docker ps -aqf "name=$opt_container")
 DOCKER_HOSTNAME=$(docker exec --user=root $DOCKER_CONTAINER_ID /bin/bash -c "hostname -i")
 
