@@ -73,34 +73,10 @@ if [ -z "$opt_imageversion" ] ; then
   exit 1
 fi
 
-echo -e "Container to get: $opt_container"
-echo -e "Containers active"
-docker ps
-echo -e "Containers all"
-docker ps -a
-echo -e "Images"
-docker images
-echo -e "docker ps aqf"
-docker ps -aqf "name=$opt_container"
-
 DOCKER_CONTAINER_ID=$(docker ps -aqf "name=$opt_container")
-echo "start hostname help"
-docker exec -t --user=root $DOCKER_CONTAINER_ID /bin/bash -c "hostname --help"
-echo "end hostname help"
-DOCKER_HOSTNAME=$(docker exec -t --user=root $DOCKER_CONTAINER_ID /bin/bash -c "cat /etc/hostname")
+DOCKER_HOSTNAME=$(docker exec --user=root $DOCKER_CONTAINER_ID /bin/bash -c "hostname -i")
 
-echo "curl start"
-curl -X GET http://$DOCKER_HOSTNAME:4000
-echo "curl end"
-
-if [ -z $DOCKER_HOSTNAME ]; then
-  echo "docker hostname empty"
-  exit 1
-fi
-
-echo "start test"
 bin/docker/node/online.js $DOCKER_HOSTNAME
-echo "End test"
 
 docker stop $opt_container -t 0;
 
