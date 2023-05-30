@@ -1,0 +1,160 @@
+name: ZCode App
+on:
+  push:
+    branches:
+      - "develop"
+jobs:
+  install:
+    name: Install development
+    runs-on: ubuntu-latest
+    environment: development
+    container:
+      image: zcodeapp/node_backend
+      options: --user root
+    env:
+      NODE_ENV: development
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install
+        run: "bin/ci/install -e development"
+      - name: Build
+        run: "bin/ci/build -e development"
+      - name: Cache
+        id: cache-install
+        uses: actions/cache/save@v3
+        with:
+          path: .
+          key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
+
+  test_unit:
+    name: Test Unit
+    runs-on: ubuntu-latest
+    needs:
+    - install
+    environment: development
+    container:
+      image: zcodeapp/node_backend
+      options: --user root
+    env:
+      NODE_ENV: development
+    steps:
+      - name: Restore Install
+        id: cache-install
+        uses: actions/cache/restore@v3
+        with:
+          path: .
+          key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
+      - name: Test
+        run: "bin/ci/test_unit -e development"
+
+  test_e2e:
+    name: Test e2e
+    runs-on: ubuntu-latest
+    needs:
+    - install
+    environment: development
+    container:
+      image: zcodeapp/node_backend
+      options: --user root
+    env:
+      NODE_ENV: development
+    steps:
+      - name: Restore Install
+        id: cache-install
+        uses: actions/cache/restore@v3
+        with:
+          path: .
+          key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
+      - name: Test
+        run: "bin/ci/test_e2e -e development"
+    
+  install_production:
+    name: Install production
+    runs-on: ubuntu-latest
+    needs:
+    - test_unit
+    - test_e2e
+    environment: development
+    container:
+      image: zcodeapp/node_backend
+      options: --user root
+    env:
+      NODE_ENV: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install
+        run: "bin/ci/install -e production"
+      - name: Build
+        run: "bin/ci/build -e production"
+      - name: Cache
+        id: cache-install-production
+        uses: actions/cache/save@v3
+        with:
+          path: .
+          key: ${{ runner.os }}-install-production-${{ hashFiles('package.json') }}
+
+  image:
+    name: Create image
+    runs-on: ubuntu-latest
+    needs:
+    - install_production
+    environment: development
+    container:
+      image: zcodeapp/node_backend
+      options: --user root
+    env:
+      NODE_ENV: production
+    steps:
+      - name: Restore Install
+        id: cache-install-production
+        uses: actions/cache/restore@v3
+        with:
+          path: .
+          key: ${{ runner.os }}-install-production-${{ hashFiles('package.json') }}
+      - name: Create Image
+        run: "bin/ci/image -e production -d zcodeapp/ide-server"
+      - name: Save Image
+        run: mkdir images && docker image save --output images/zcodeapp-ide-server.tar zcodeapp/ide-server
+      - name: Cache Image
+        id: cache-image
+        uses: actions/cache/save@v3
+        with:
+          path: images
+          key: ${{ runner.os }}-image-${{ hashFiles('package.json') }}
+
+  test_container:
+    name: Test e2e Container
+    runs-on: ubuntu-latest
+    needs:
+    - image
+    environment: development
+    container:
+      image: zcodeapp/node_backend
+      options: --user root
+    env:
+      NODE_ENV: development
+    steps:
+      - name: Restore Install
+        id: cache-install
+        uses: actions/cache/restore@v3
+        with:
+          path: .
+          key: ${{ runner.os }}-install-${{ hashFiles('package.json') }}
+      - name: Restore Image
+        id: cache-image
+        uses: actions/cache/restore@v3
+        with:
+          path: images
+          key: ${{ runner.os }}-image-${{ hashFiles('package.json') }}
+      - name: Import Image
+        run: docker image load -i images/zcodeapp-ide-server.tar
+      - name: Image Tag
+        run: docker tag zcodeapp/ide-server:latest zcodeapp/ide-server:test_version
+      - name: Start ZCode APP IDE Server
+        uses: zcodeapp/ide-server-github-action@1.1.0
+        with:
+          ide-server-version: test_version
+      - name: Test Image
+        run: "bin/ci/test_container -e development"
