@@ -1,11 +1,11 @@
 import { Test } from '@nestjs/testing';
 import { INestApplication, Logger } from '@nestjs/common';
-import { WebSocketGateway } from '../src/websocket/websocket.gateway';
+import { WebSocketGateway } from '../../src/websocket/websocket.gateway';
 import { Socket, io } from 'socket.io-client';
-import { WebSocketService } from '../src/websocket/websocket.service';
-import { Package } from '../src/utils/package/package';
-import { IPackageInfo } from '../src/utils/package/package.interface';
-import { WebSocketAdapter } from '../src/adapters/websocket.adapter';
+import { WebSocketService } from '../../src/websocket/websocket.service';
+import { Package } from '../../src/utils/package/package';
+import { IPackageInfo } from '../../src/utils/package/package.interface';
+import { WebSocketAdapter } from '../../src/adapters/websocket.adapter';
 import * as fs from 'fs';
 
 async function createNestApp(...gateways): Promise<INestApplication> {

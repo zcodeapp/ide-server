@@ -25,7 +25,7 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: .
-          key: ${{ runner.os }}-install-${{ github.head_ref }}-${{ github.sha }}
+          key: ${{ runner.os }}-install-${{ github.sha }}
 
   test_unit:
     name: Test Unit
@@ -44,7 +44,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: .
-          key: ${{ runner.os }}-install-${{ github.head_ref }}-${{ github.sha }}
+          key: ${{ runner.os }}-install-${{ github.sha }}
       - name: Test
         run: "bin/ci/test_unit -e development"
 
@@ -65,7 +65,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: .
-          key: ${{ runner.os }}-install-${{ github.head_ref }}-${{ github.sha }}
+          key: ${{ runner.os }}-install-${{ github.sha }}
       - name: Test
         run: "bin/ci/test_e2e -e development"
     
@@ -93,7 +93,7 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: .
-          key: ${{ runner.os }}-install-production-${{ github.head_ref }}-${{ github.sha }}
+          key: ${{ runner.os }}-install-production-${{ github.sha }}
 
   image:
     name: Create image
@@ -112,7 +112,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: .
-          key: ${{ runner.os }}-install-production-${{ github.head_ref }}-${{ github.sha }}
+          key: ${{ runner.os }}-install-production-${{ github.sha }}
       - name: Create Image
         run: "bin/ci/image -e production -d zcodeapp/ide-server"
       - name: Save Image
@@ -122,7 +122,7 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: images
-          key: ${{ runner.os }}-image-${{ github.head_ref }}-${{ github.sha }}
+          key: ${{ runner.os }}-image-${{ github.sha }}
 
   test_container:
     name: Test e2e Container
@@ -141,13 +141,13 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: .
-          key: ${{ runner.os }}-install-${{ github.head_ref }}-${{ github.sha }}
+          key: ${{ runner.os }}-install-${{ github.sha }}
       - name: Restore Image
         id: cache-image
         uses: actions/cache/restore@v3
         with:
           path: images
-          key: ${{ runner.os }}-image-${{ github.head_ref }}-${{ github.sha }}
+          key: ${{ runner.os }}-image-${{ github.sha }}
       - name: Import Image
         run: docker image load -i images/zcodeapp-ide-server.tar
       - name: Image Tag
@@ -180,13 +180,13 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: .
-          key: ${{ runner.os }}-install-${{ github.head_ref }}-${{ github.sha }}
+          key: ${{ runner.os }}-install-${{ github.sha }}
       - name: Restore Image
         id: cache-image
         uses: actions/cache/restore@v3
         with:
           path: images
-          key: ${{ runner.os }}-image-${{ github.head_ref }}-${{ github.sha }}
+          key: ${{ runner.os }}-image-${{ github.sha }}
       - name: Import Image
         run: docker image load -i images/zcodeapp-ide-server.tar
       - name: Push
