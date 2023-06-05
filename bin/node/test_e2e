@@ -1,7 +1,3 @@
 #!/usr/bin/env bash
 
-set -e
-set -o errexit
-set -o nounset
-
-/usr/local/bin/npm run test:e2e
+/usr/local/bin/npm run test:e2e $1

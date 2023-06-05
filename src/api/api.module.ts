@@ -12,7 +12,7 @@ import { Package } from '../utils/package/package';
     {
       provide: 'getDate',
       useValue: () => {
-        return new Date()
+        return new Date();
       },
     },
   ],

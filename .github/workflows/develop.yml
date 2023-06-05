@@ -4,7 +4,7 @@ on:
     pull_request:
       types: [opened, reopened]
     branches:
-      - "main"
+      - "develop"
 jobs:
   install:
     name: Install development
@@ -160,36 +160,3 @@ jobs:
           ide-server-version: test_version
       - name: Test Image
         run: "bin/ci/test_container -e development"
-
-  push:
-    name: Build container for official image on Docker
-    runs-on: ubuntu-latest
-    needs:
-    - test_unit
-    - test_e2e
-    - test_container
-    environment: production
-    container:
-      image: zcodeapp/node_backend
-      options: --user root
-    env:
-      NODE_ENV: production
-      DOCKERHUB_USERNAME: '${{ secrets.DOCKERHUB_USERNAME }}'
-      DOCKERHUB_ACCESS_TOKEN: '${{ secrets.DOCKERHUB_ACCESS_TOKEN }}'
-    steps:
-      - name: Restore Install
-        id: cache-install
-        uses: actions/cache/restore@v3
-        with:
-          path: .
-          key: ${{ runner.os }}-install-${{ github.sha }}
-      - name: Restore Image
-        id: cache-image
-        uses: actions/cache/restore@v3
-        with:
-          path: images
-          key: ${{ runner.os }}-image-${{ github.sha }}
-      - name: Import Image
-        run: docker image load -i images/zcodeapp-ide-server.tar
-      - name: Push
-        run: "DOCKERHUB_USERNAME=$DOCKERHUB_USERNAME DOCKERHUB_ACCESS_TOKEN=$DOCKERHUB_ACCESS_TOKEN bin/ci/push -e production"
