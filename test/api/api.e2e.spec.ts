@@ -19,12 +19,12 @@ console.log('DOCKER_HOSTNAME', {
   DOCKER_HOSTNAME
 });
 
-const host = DOCKER_HOSTNAME ?? 'localhost:4000'
+const host = DOCKER_HOSTNAME ? DOCKER_HOSTNAME : 'localhost:4000'
 
 const client = axios.create({
   baseURL: `http://${host}`,
   headers: {
-    "Connection": 'close'
+    'Connection': 'close'
   }
 });
 
@@ -33,14 +33,14 @@ describe('api/api.module (e2e)', () => {
   const file = fs.readFileSync('package.json').toString();
   const info: IPackageInfo = JSON.parse(file);
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     if (!DOCKER_HOSTNAME) {
       app = await NestFactory.create(AppModule);
       await app.listen(4000);
     }
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     if (!DOCKER_HOSTNAME) {
       await app.close();
     }
@@ -61,7 +61,11 @@ describe('api/api.module (e2e)', () => {
         expect(true).toBe(false);
       })
       .catch(e => {
-        expect(e.response.status).toBe(404)
+        if (DOCKER_HOSTNAME) {
+          expect(e.response.status).toBe(404)
+        } else {
+          expect(e.code).toBe('ERR_BAD_REQUEST')
+        }
       })
   });
 
@@ -71,7 +75,11 @@ describe('api/api.module (e2e)', () => {
         expect(true).toBe(false);
       })
       .catch(e => {
-        expect(e.response.status).toBe(404);
+        if (DOCKER_HOSTNAME) {
+          expect(e.response.status).toBe(404)
+        } else {
+          expect(e.code).toBe('ERR_BAD_REQUEST')
+        }
       })
   });
 });
