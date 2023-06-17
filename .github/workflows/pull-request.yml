@@ -1,8 +1,7 @@
 name: ZCode App
 on:
-  push:
-    pull_request:
-      types: [opened, reopened]
+  pull_request:
+    types: [opened, reopened]
 
 jobs:
   install:
