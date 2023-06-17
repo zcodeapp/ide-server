@@ -8,6 +8,14 @@ import { IPackageInfo } from '../../src/utils/package/package.interface';
 import { WebSocketAdapter } from '../../src/adapters/websocket.adapter';
 import * as fs from 'fs';
 
+const {
+  DOCKER_HOSTNAME
+} = process.env;
+
+console.log('DOCKER_HOSTNAME', {
+  DOCKER_HOSTNAME
+})
+
 async function createNestApp(...gateways): Promise<INestApplication> {
   const testingModule = await Test.createTestingModule({
     providers: gateways,
@@ -20,18 +28,22 @@ async function createNestApp(...gateways): Promise<INestApplication> {
 describe('websocket/websocket.module (e2e)', () => {
   let ws: Socket, app: INestApplication;
 
-  beforeEach(async () => {
-    app = await createNestApp(
-      Logger,
-      Package,
-      WebSocketService,
-      WebSocketGateway,
-    );
-    await app.listen(4000);
+  beforeAll(async () => {
+    if (!DOCKER_HOSTNAME) {
+      app = await createNestApp(
+        Logger,
+        Package,
+        WebSocketService,
+        WebSocketGateway,
+      );
+      await app.listen(4000);
+    }
   });
 
-  afterEach(async () => {
-    await app.close();
+  afterAll(async () => {
+    if (!DOCKER_HOSTNAME) {
+      await app.close();
+    }
   });
 
   it(`get version`, async () => {
@@ -44,7 +56,11 @@ describe('websocket/websocket.module (e2e)', () => {
       devDependencies: {},
     };
 
-    ws = io('ws://localhost:4000');
+    let host = 'ws://localhost:4000';
+    if (DOCKER_HOSTNAME) {
+      host = `ws://${DOCKER_HOSTNAME}`;
+    }
+    ws = io(host);
     await new Promise<void>((resolve) =>
       ws.on('connect', () => {
         ws.emit('version', (_version) => {
