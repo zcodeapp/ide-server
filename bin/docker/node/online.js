@@ -29,7 +29,7 @@ async function _interval() {
   console.log('[ONLINE] Try connect server', {
     host
   });
-  axios.get(`http://${host}:4000/`)
+  axios.get(`http://${host}/`)
     .then(r => {
       const decoded = r.data;
       console.log('[ONLINE] Incoming data', {
