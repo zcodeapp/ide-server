@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Package } from '../utils/package/package';
-import { IPackageInfo } from '../utils/package/package.interface';
+import { Package } from '../../utils/package/package';
+import { IPackageInfo } from '../../utils/package/package.interface';
 
 @Injectable()
 export class WebSocketService {

@@ -1,7 +1,9 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
 import { ApiService } from './api.service';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller({})
+@UseGuards(ThrottlerGuard)
 export class ApiController {
   constructor(
     private _apiService: ApiService,

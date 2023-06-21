@@ -1,12 +1,13 @@
 import { Test } from '@nestjs/testing';
 import { AppModule } from './app.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
-jest.mock('./websocket/websocket.module');
+jest.mock('./plugins/websocket/websocket.module');
 
 describe('app.module', () => {
   it('should compile the module', async () => {
     const module = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [ThrottlerModule, AppModule],
     }).compile();
 
     expect(module).toBeDefined();

@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { WebSocketModule } from './websocket.module';
-import { Package } from '../utils/package/package';
+import { Package } from '../../utils/package/package';
 import { WebSocketService } from './websocket.service';
 import { WebSocketGateway } from './websocket.gateway';
 import { Logger } from '@nestjs/common';

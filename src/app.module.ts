@@ -1,10 +1,19 @@
-import { Logger, Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { WebSocketModule } from './websocket/websocket.module';
+import { WebSocketModule } from './plugins/websocket/websocket.module';
 import { ApiModule } from './api/api.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
+@Global()
 @Module({
-  imports: [ConfigModule.forRoot(), WebSocketModule, ApiModule],
-  providers: [Logger],
+  imports: [
+    ConfigModule.forRoot(),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 60,
+    }),
+    WebSocketModule,
+    ApiModule,
+  ],
 })
 export class AppModule {}

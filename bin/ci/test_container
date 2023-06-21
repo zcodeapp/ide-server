@@ -83,5 +83,7 @@ docker exec $DOCKER_CONTAINER_ID /bin/bash -c "curl -X GET http://localhost:4000
 
 bin/docker/node/online.js "$DOCKER_HOSTNAME:4000"
 DOCKER_HOSTNAME="$DOCKER_HOSTNAME:4000" bin/node/test_e2e
+bin/flood -u $DOCKER_HOSTNAME:4000
+echo "flood exited with code ($?)"
 
 exit 0
