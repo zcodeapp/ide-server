@@ -153,8 +153,9 @@ jobs:
       - name: Image Tag
         run: docker tag zcodeapp/ide-server:latest zcodeapp/ide-server:test_version
       - name: Start ZCode APP IDE Server
-        uses: zcodeapp/ide-server-github-action@1.1.0
+        uses: zcodeapp/ide-server-github-action@1.2.0
         with:
           ide-server-version: test_version
+          ide-server-key: test_version
       - name: Test Image
         run: "bin/ci/test_container -e development"
