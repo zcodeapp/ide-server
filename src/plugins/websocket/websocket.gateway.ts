@@ -35,7 +35,7 @@ export class WebSocketGateway {
           },
         }),
       );
-      client?.disconnect();
+      client.disconnect();
       return;
     }
     client.emit('connected');

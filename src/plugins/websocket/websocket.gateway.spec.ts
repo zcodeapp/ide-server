@@ -63,6 +63,7 @@ describe('websocket/websocket.gateway', () => {
       emit: (event: string) => {
         if (event == 'connected') result.connected = true;
       },
+      disconnect: () => {},
     } as any;
 
     jest.spyOn(authorizer, 'validateKey').mockImplementation(async () => true);
@@ -141,6 +142,7 @@ describe('websocket/websocket.gateway', () => {
         params = JSON.parse(params);
         if (event == 'system_error') result.message = params.message;
       },
+      disconnect: () => {},
     } as any;
 
     jest.spyOn(authorizer, 'validateKey').mockImplementation(async () => true);
