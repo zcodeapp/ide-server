@@ -12,7 +12,9 @@ RUN mkdir -p /var/www /__w/_temp/_runner_file_commands \
     && sed -i 's/docker:x:999:node/docker:x:998:node/g' /etc/group \
     && apt-get clean autoclean \
     && apt-get autoremove --yes \
-    && rm -rf /var/lib/{apt,dpkg,cache,log}/
+    && rm -rf /var/lib/{apt,dpkg,cache,log}/ \
+    && curl -L -o "/usr/local/bin/websocat" "https://github.com/vi/websocat/releases/download/v1.7.0/websocat_amd64-linux-static" \
+    && chmod +x /usr/local/bin/websocat
 
 WORKDIR /var/www
 

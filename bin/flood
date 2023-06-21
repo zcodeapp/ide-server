@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+set -e
+set -o errexit
+set -o nounset
+
+usage() {
+  printf "Flood for DDos test/protection\n"
+
+  printf "Usage: bin/flood "
+  printf -- "[-h] "
+  printf -- "[-v] "
+  printf -- "-u <url> "
+  printf -- "-r <retries> "
+  printf "\n"
+
+  printf "  -%s\t%s - %s%s\n" "h" "help" "Show this help message." ""
+  printf "  -%s\t%s - %s%s\n" "v" "version" "Show version information." ""
+  printf "  -%s\t%s - %s%s\n" "u" "url" "URL" " (default: http://localhost:4000)"
+  printf "  -%s\t%s - %s%s\n" "r" "retries" "Retries number" " (default: 20)"
+}
+
+version() {
+  printf "0.0.1\n"
+}
+
+# default values
+opt_help="false"
+opt_version="false"
+opt_url="http://localhost:4000"
+opt_retries="100"
+
+# declared functions
+
+# option parsing
+OPTSPEC=:hvu:r:
+while getopts $OPTSPEC option; do
+  case "$option" in
+    h ) opt_help="true"; usage; exit 0  ;;
+    v ) opt_version="true"; version; exit 0  ;;
+    u ) opt_url=$OPTARG;  ;;
+    r ) opt_retries=$OPTARG;  ;;
+   \? ) echo "Unknown option: -$OPTARG" >&2; exit 1;;
+    : ) echo "Missing option argument for -$OPTARG" >&2; exit 1;;
+    * ) echo "Unimplemented option: -$OPTARG" >&2; exit 1;;
+  esac
+done
+shift $((OPTIND - 1))
+
+# required option validation
+if [ -z "$opt_url" ] ; then
+  usage
+  exit 1
+fi
+if [ -z "$opt_retries" ] ; then
+  usage
+  exit 1
+fi
+
+# test many request
+for (( i=1; i<=$opt_retries; i++ )); do
+  STATUSCODE=$(curl -s -o /dev/null -w "%{http_code}\n" $opt_url)
+  echo -e "$opt_url => [$i] => status code [$STATUSCODE]"
+done
+
+# last status code is 200? unsafe
+if [ "$STATUSCODE" == "200" ]; then
+  echo "The address [$opt_url] UNSAFE"
+  exit 1;
+fi
+
+# last status code is 429? safe
+if [ "$STATUSCODE" == "429" ]; then
+  echo "The address [$opt_url] SAFE"
+  exit 0;
+fi

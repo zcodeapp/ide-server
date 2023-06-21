@@ -1,8 +1,8 @@
 import { WebSocketService } from './websocket.service';
-import { Package } from '../utils/package/package';
-import { IPackageInfo } from 'src/utils/package/package.interface';
+import { Package } from '../../utils/package/package';
+import { IPackageInfo } from '../../utils/package/package.interface';
 
-jest.mock('../utils/package/package');
+jest.mock('../../utils/package/package');
 
 describe('websocket/websocket.service', () => {
   let logs: { message: string; params?: any }[] = [];

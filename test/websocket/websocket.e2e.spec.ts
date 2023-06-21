@@ -1,20 +1,28 @@
 import { Test } from '@nestjs/testing';
 import { INestApplication, Logger } from '@nestjs/common';
-import { WebSocketGateway } from '../../src/websocket/websocket.gateway';
+import { WebSocketGateway } from '../../src/plugins/websocket/websocket.gateway';
 import { Socket, io } from 'socket.io-client';
-import { WebSocketService } from '../../src/websocket/websocket.service';
+import { WebSocketService } from '../../src/plugins/websocket/websocket.service';
 import { Package } from '../../src/utils/package/package';
 import { IPackageInfo } from '../../src/utils/package/package.interface';
 import { WebSocketAdapter } from '../../src/adapters/websocket.adapter';
 import * as fs from 'fs';
+import { Authorizer } from '../../src/plugins/authorizer/authorizer';
 
-const {
-  DOCKER_HOSTNAME
-} = process.env;
+const { DOCKER_HOSTNAME, DOCKER_SERVER_KEY } = process.env;
+
+let server_key = '9a275a9d-98c2-46f5-9dc4-750034aa66d7';
+let host = 'ws://localhost:4000';
+if (DOCKER_HOSTNAME) {
+  host = `ws://${DOCKER_HOSTNAME}`;
+  if (DOCKER_SERVER_KEY) {
+    server_key = DOCKER_SERVER_KEY;
+  }
+}
 
 console.log('DOCKER_HOSTNAME', {
-  DOCKER_HOSTNAME
-})
+  DOCKER_HOSTNAME,
+});
 
 async function createNestApp(...gateways): Promise<INestApplication> {
   const testingModule = await Test.createTestingModule({
@@ -31,8 +39,13 @@ describe('websocket/websocket.module (e2e)', () => {
   beforeAll(async () => {
     if (!DOCKER_HOSTNAME) {
       app = await createNestApp(
-        Logger,
         Package,
+        Logger,
+        Authorizer,
+        {
+          provide: 'SERVER_KEY',
+          useValue: server_key,
+        },
         WebSocketService,
         WebSocketGateway,
       );
@@ -46,7 +59,89 @@ describe('websocket/websocket.module (e2e)', () => {
     }
   });
 
-  it(`get version`, async () => {
+  it('test try connect with valid server key', async () => {
+    const result = {
+      connected: false,
+    };
+
+    ws = io(host, {
+      auth: {
+        key: server_key,
+      },
+    });
+    await new Promise<void>((resolve, error) => {
+      ws.on('connect', () => {
+        ws.emit('version', () => {
+          result.connected = true;
+          resolve();
+        });
+      });
+      ws.on('error', () => {
+        error();
+      });
+    });
+    ws.close();
+
+    expect(result.connected).toBeTruthy();
+  });
+
+  it('test try connect with invalid server key', async () => {
+    const result = {
+      hasError: false,
+      getVersion: false,
+    };
+
+    ws = io(host, {
+      auth: {
+        key: 'invalid key',
+      },
+    });
+
+    await new Promise<void>((resolve, error) => {
+      ws.on('connect', () => {
+        ws.emit('version', () => {
+          result.getVersion = true;
+          error();
+        });
+        ws.on('disconnect', () => {
+          result.hasError = true;
+          resolve();
+        });
+      });
+    });
+    ws.close();
+
+    expect(result.hasError).toBeTruthy();
+    expect(result.getVersion).toBeFalsy();
+  });
+
+  it('test try connect with empty server key', async () => {
+    const result = {
+      hasError: false,
+      getVersion: false,
+    };
+
+    ws = io(host);
+
+    await new Promise<void>((resolve, error) => {
+      ws.on('connect', () => {
+        ws.emit('version', () => {
+          result.getVersion = true;
+          error();
+        });
+        ws.on('disconnect', () => {
+          result.hasError = true;
+          resolve();
+        });
+      });
+    });
+    ws.close();
+
+    expect(result.hasError).toBeTruthy();
+    expect(result.getVersion).toBeFalsy();
+  });
+
+  it(`test get current version version`, async () => {
     const file = fs.readFileSync('package.json').toString();
     const info: IPackageInfo = JSON.parse(file);
     let version: IPackageInfo = {
@@ -55,24 +150,28 @@ describe('websocket/websocket.module (e2e)', () => {
       dependencies: {},
       devDependencies: {},
     };
-
-    let host = 'ws://localhost:4000';
-    if (DOCKER_HOSTNAME) {
-      host = `ws://${DOCKER_HOSTNAME}`;
+    ws = io(host, {
+      auth: {
+        key: server_key,
+      },
+    });
+    try {
+      await new Promise<void>((resolve) =>
+        ws.on('connect', () => {
+          ws.emit('version', (_version) => {
+            version = _version;
+            resolve();
+          });
+        }),
+      );
+      expect(version.name).toBe(info.name);
+      expect(version.version).toBe(info.version);
+      expect(version.dependencies).toStrictEqual(info.dependencies);
+      expect(version.devDependencies).toStrictEqual(info.devDependencies);
+    } catch (e) {
+      throw e;
+    } finally {
+      ws.close();
     }
-    ws = io(host);
-    await new Promise<void>((resolve) =>
-      ws.on('connect', () => {
-        ws.emit('version', (_version) => {
-          version = _version;
-          resolve();
-        });
-      }),
-    );
-    ws.close();
-    expect(version.name).toBe(info.name);
-    expect(version.version).toBe(info.version);
-    expect(version.dependencies).toStrictEqual(info.dependencies);
-    expect(version.devDependencies).toStrictEqual(info.devDependencies);
   });
 });

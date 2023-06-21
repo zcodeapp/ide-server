@@ -26,6 +26,8 @@ services:
       - 4000:4000
     environment:
       - PORT=4000
+      - SERVER_KEY=355b5636-3c3e-4e57-97ad-5e1dd40283a2
+    restart: always
 
   nest_debug:
     image: zcodeapp/node_backend
@@ -40,9 +42,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 4000:4000
-      - 9229:9229
+      - 9228:9229
     environment:
       - PORT=4000
+      - SERVER_KEY=355b5636-3c3e-4e57-97ad-5e1dd40283a2
 
   nest_test:
     image: zcodeapp/node_backend
