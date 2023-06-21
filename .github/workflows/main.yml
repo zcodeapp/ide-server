@@ -124,8 +124,8 @@ jobs:
           path: images
           key: ${{ runner.os }}-image-${{ github.sha }}
 
-  test_container:
-    name: Test e2e Container
+  test_container_online:
+    name: Test Container Online
     runs-on: ubuntu-latest
     needs:
     - image
@@ -153,11 +153,84 @@ jobs:
       - name: Image Tag
         run: docker tag zcodeapp/ide-server:latest zcodeapp/ide-server:test_version
       - name: Start ZCode APP IDE Server
-        uses: zcodeapp/ide-server-github-action@1.1.0
+        uses: zcodeapp/ide-server-github-action@1.2.0
         with:
           ide-server-version: test_version
+          ide-server-key: test_version
       - name: Test Image
-        run: "bin/ci/test_container -e development"
+        run: "bin/ci/test_container_online -e development"
+
+  test_container_e2e:
+    name: Test Container e2e
+    runs-on: ubuntu-latest
+    needs:
+    - test_container_online
+    environment: development
+    container:
+      image: zcodeapp/node_backend
+      options: --user root
+    env:
+      NODE_ENV: development
+    steps:
+      - name: Restore Install
+        id: cache-install
+        uses: actions/cache/restore@v3
+        with:
+          path: .
+          key: ${{ runner.os }}-install-${{ github.sha }}
+      - name: Restore Image
+        id: cache-image
+        uses: actions/cache/restore@v3
+        with:
+          path: images
+          key: ${{ runner.os }}-image-${{ github.sha }}
+      - name: Import Image
+        run: docker image load -i images/zcodeapp-ide-server.tar
+      - name: Image Tag
+        run: docker tag zcodeapp/ide-server:latest zcodeapp/ide-server:test_version
+      - name: Start ZCode APP IDE Server
+        uses: zcodeapp/ide-server-github-action@1.2.0
+        with:
+          ide-server-version: test_version
+          ide-server-key: test_version
+      - name: Test Image
+        run: "bin/ci/test_container_e2e -e development"
+
+  test_container_flood:
+    name: Test Container Flood
+    runs-on: ubuntu-latest
+    needs:
+    - test_container_online
+    environment: development
+    container:
+      image: zcodeapp/node_backend
+      options: --user root
+    env:
+      NODE_ENV: development
+    steps:
+      - name: Restore Install
+        id: cache-install
+        uses: actions/cache/restore@v3
+        with:
+          path: .
+          key: ${{ runner.os }}-install-${{ github.sha }}
+      - name: Restore Image
+        id: cache-image
+        uses: actions/cache/restore@v3
+        with:
+          path: images
+          key: ${{ runner.os }}-image-${{ github.sha }}
+      - name: Import Image
+        run: docker image load -i images/zcodeapp-ide-server.tar
+      - name: Image Tag
+        run: docker tag zcodeapp/ide-server:latest zcodeapp/ide-server:test_version
+      - name: Start ZCode APP IDE Server
+        uses: zcodeapp/ide-server-github-action@1.2.0
+        with:
+          ide-server-version: test_version
+          ide-server-key: test_version
+      - name: Test Image
+        run: "bin/ci/test_container_flood -e development"
 
   push:
     name: Build container for official image on Docker
@@ -165,7 +238,8 @@ jobs:
     needs:
     - test_unit
     - test_e2e
-    - test_container
+    - test_container_flood
+    - test_container_e2e
     environment: production
     container:
       image: zcodeapp/node_backend
