@@ -28,7 +28,7 @@ version() {
 opt_help="false"
 opt_version="false"
 opt_url="http://localhost:4000"
-opt_retries="20"
+opt_retries="100"
 
 # declared functions
 
