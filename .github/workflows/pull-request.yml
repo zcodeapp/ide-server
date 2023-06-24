@@ -153,10 +153,12 @@ jobs:
       - name: Image Tag
         run: docker tag zcodeapp/ide-server:latest zcodeapp/ide-server:test_version
       - name: Start ZCode APP IDE Server
-        uses: zcodeapp/ide-server-github-action@1.2.0
+        uses: zcodeapp/ide-server-github-action@1.3.0
         with:
           ide-server-version: test_version
           ide-server-key: test_version
+          ide-rate-points: 100
+          ide-rate-duration: 1
       - name: Test Image
         run: "bin/ci/test_container_online -e development"
 
@@ -189,10 +191,12 @@ jobs:
       - name: Image Tag
         run: docker tag zcodeapp/ide-server:latest zcodeapp/ide-server:test_version
       - name: Start ZCode APP IDE Server
-        uses: zcodeapp/ide-server-github-action@1.2.0
+        uses: zcodeapp/ide-server-github-action@1.3.0
         with:
           ide-server-version: test_version
           ide-server-key: test_version
+          ide-rate-points: 100
+          ide-rate-duration: 1
       - name: Test Image
         run: "bin/ci/test_container_e2e -e development"
 
@@ -225,9 +229,11 @@ jobs:
       - name: Image Tag
         run: docker tag zcodeapp/ide-server:latest zcodeapp/ide-server:test_version
       - name: Start ZCode APP IDE Server
-        uses: zcodeapp/ide-server-github-action@1.2.0
+        uses: zcodeapp/ide-server-github-action@1.3.0
         with:
           ide-server-version: test_version
           ide-server-key: test_version
+          ide-rate-points: 100
+          ide-rate-duration: 1
       - name: Test Image
         run: "bin/ci/test_container_flood -e development"

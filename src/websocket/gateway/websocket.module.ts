@@ -25,7 +25,6 @@ const { SERVER_KEY, RATE_POINTS, RATE_DURATION } = process.env;
             points: Number(RATE_POINTS),
             duration: Number(RATE_DURATION),
           }),
-          1,
         );
       },
     },
