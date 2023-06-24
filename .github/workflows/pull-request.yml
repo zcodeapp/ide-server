@@ -233,7 +233,7 @@ jobs:
         with:
           ide-server-version: test_version
           ide-server-key: test_version
-          ide-rate-points: 100
-          ide-rate-duration: 1
+          ide-rate-points: 5
+          ide-rate-duration: 600
       - name: Test Image
         run: "bin/ci/test_container_flood -e development"
