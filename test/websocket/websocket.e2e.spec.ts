@@ -176,7 +176,7 @@ describe('websocket/websocket.module (e2e)', () => {
             resolve();
           });
           ws.on('system_error', (a) => {
-            console.log('error', { a })
+            console.log('error', { a });
           });
         }),
       );
