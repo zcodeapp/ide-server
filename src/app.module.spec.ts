@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { AppModule } from './app.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 
-jest.mock('./plugins/websocket/websocket.module');
+jest.mock('./websocket/gateway/websocket.module');
 
 describe('app.module', () => {
   it('should compile the module', async () => {

@@ -4,4 +4,4 @@ set -e
 set -o errexit
 set -o nounset
 
-/usr/local/bin/npm run start:debug --hostname 0.0.0.0
+/usr/local/bin/npm run debug --hostname 0.0.0.0

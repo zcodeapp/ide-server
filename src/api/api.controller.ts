@@ -3,7 +3,7 @@ import { ApiService } from './api.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller({})
-@UseGuards(ThrottlerGuard)
+// @UseGuards(ThrottlerGuard)
 export class ApiController {
   constructor(
     private _apiService: ApiService,

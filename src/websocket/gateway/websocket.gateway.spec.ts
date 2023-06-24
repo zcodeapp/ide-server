@@ -2,11 +2,15 @@ import { WebSocketGateway } from './websocket.gateway';
 import { WebSocketService } from './websocket.service';
 import { Package } from '../../utils/package/package';
 import { IPackageInfo } from '../../utils/package/package.interface';
-import { Authorizer } from '../authorizer/authorizer';
+import { Authorizer } from '../../plugins/authorizer/authorizer';
+import { RateLimit } from '../../plugins/rate/limit';
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 jest.mock('./websocket.service');
 jest.mock('../../utils/package/package');
-jest.mock('../authorizer/authorizer');
+jest.mock('../../plugins/authorizer/authorizer');
+jest.mock('../../plugins/rate/limit');
+jest.mock('rate-limiter-flexible');
 
 describe('websocket/websocket.gateway', () => {
   let logs: { message: string; params?: any }[] = [];
@@ -24,7 +28,16 @@ describe('websocket/websocket.gateway', () => {
   beforeEach(() => {
     _package = new Package();
     webSocketService = new WebSocketService(_package, logger);
-    webSocketGateway = new WebSocketGateway(webSocketService, authorizer);
+    webSocketGateway = new WebSocketGateway(
+      webSocketService,
+      authorizer,
+      new RateLimit(
+        new RateLimiterMemory({
+          points: 100,
+          duration: 10000,
+        }),
+      ),
+    );
   });
 
   afterEach(() => {

@@ -6,13 +6,15 @@ import {
 import { Server, Socket } from 'socket.io';
 import { IPackageInfo } from '../../utils/package/package.interface';
 import { WebSocketService } from './websocket.service';
-import { Authorizer } from '../authorizer/authorizer';
+import { Authorizer } from '../../plugins/authorizer/authorizer';
+import { RateLimit } from '../../plugins/rate/limit';
 
 @NestWebSocket({
   cors: {
     origin: '*',
   },
 })
+// @UseInterceptors(WebSocketDDoSInterceptor)
 export class WebSocketGateway {
   @WebSocketServer()
   server: Server;
@@ -20,10 +22,25 @@ export class WebSocketGateway {
   constructor(
     private readonly _webSocketService: WebSocketService,
     private readonly _authorizer: Authorizer,
+    private readonly _rateLimit: RateLimit,
   ) {}
 
   async handleConnection(client: Socket) {
+    const address = client.handshake.address;
+    const isBlocked = await this._rateLimit.test(address);
     const key = client.handshake.auth?.key;
+    if (isBlocked) {
+      client.emit(
+        'system_error',
+        JSON.stringify({
+          context: 'connect',
+          message: 'server_many_connections',
+          params: {},
+        }),
+      );
+      client.disconnect();
+      return;
+    }
     if (!key || !(await this._authorizer.validateKey(key))) {
       client.emit(
         'system_error',
