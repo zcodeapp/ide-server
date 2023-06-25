@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { WebSocketModule } from './plugins/websocket/websocket.module';
+import { WebSocketModule } from './websocket/gateway/websocket.module';
 import { ApiModule } from './api/api.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 

@@ -14,12 +14,12 @@ export class WebSocketAdapter extends IoAdapter {
 
   public async close(server: BaseWsInstance): Promise<void> {
     this._logger.log('Bind close');
-    super.close(server);
+    return super.close(server);
   }
 
   public async dispose(): Promise<void> {
     this._logger.log('Bind dispose');
-    super.dispose();
+    return super.dispose();
   }
 
   public bindMessageHandlers(
@@ -28,7 +28,7 @@ export class WebSocketAdapter extends IoAdapter {
     transform: (data: any) => Observable<any>,
   ): void {
     this._logger.log('Bind bindMessageHandlers');
-    super.bindMessageHandlers(socket, handlers, transform);
+    return super.bindMessageHandlers(socket, handlers, transform);
   }
 
   public createIOServer(port: number, options?: any): any {
@@ -55,11 +55,11 @@ export class WebSocketAdapter extends IoAdapter {
 
   public bindClientConnect(server: Server, callback: () => void): void {
     this._logger.log('Bind bindClientConnect');
-    super.bindClientConnect(server, callback);
+    return super.bindClientConnect(server, callback);
   }
 
   public bindClientDisconnect(client: Socket, callback: () => void): void {
     this._logger.log('Bind bindClientDisconnect');
-    super.bindClientDisconnect(client, callback);
+    return super.bindClientDisconnect(client, callback);
   }
 }

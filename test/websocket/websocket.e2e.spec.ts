@@ -1,17 +1,19 @@
 import { Test } from '@nestjs/testing';
 import { INestApplication, Logger } from '@nestjs/common';
-import { WebSocketGateway } from '../../src/plugins/websocket/websocket.gateway';
+import { WebSocketGateway } from '../../src/websocket/gateway/websocket.gateway';
 import { Socket, io } from 'socket.io-client';
-import { WebSocketService } from '../../src/plugins/websocket/websocket.service';
+import { WebSocketService } from '../../src/websocket/gateway/websocket.service';
 import { Package } from '../../src/utils/package/package';
 import { IPackageInfo } from '../../src/utils/package/package.interface';
 import { WebSocketAdapter } from '../../src/adapters/websocket.adapter';
 import * as fs from 'fs';
 import { Authorizer } from '../../src/plugins/authorizer/authorizer';
+import { RateLimit } from '../../src/plugins/rate/limit';
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 const { DOCKER_HOSTNAME, DOCKER_SERVER_KEY } = process.env;
 
-let server_key = '9a275a9d-98c2-46f5-9dc4-750034aa66d7';
+let server_key = '355b5636-3c3e-4e57-97ad-5e1dd40283a2';
 let host = 'ws://localhost:4000';
 if (DOCKER_HOSTNAME) {
   host = `ws://${DOCKER_HOSTNAME}`;
@@ -42,6 +44,17 @@ describe('websocket/websocket.module (e2e)', () => {
         Package,
         Logger,
         Authorizer,
+        {
+          provide: RateLimit,
+          useFactory: () => {
+            return new RateLimit(
+              new RateLimiterMemory({
+                points: 100,
+                duration: 1,
+              }),
+            );
+          },
+        },
         {
           provide: 'SERVER_KEY',
           useValue: server_key,
@@ -161,6 +174,9 @@ describe('websocket/websocket.module (e2e)', () => {
           ws.emit('version', (_version) => {
             version = _version;
             resolve();
+          });
+          ws.on('system_error', (a) => {
+            console.log('error', { a });
           });
         }),
       );

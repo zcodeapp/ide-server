@@ -76,7 +76,10 @@ fi
 DOCKER_CONTAINER_ID=$(docker ps -aqf "name=$opt_container")
 DOCKER_HOSTNAME=$(docker exec --user=root $DOCKER_CONTAINER_ID /bin/bash -c "hostname -i")
 
-bin/flood -u $DOCKER_HOSTNAME:4000
-echo "flood exited with code ($?)"
+bin/flood -u $DOCKER_HOSTNAME:4000 -r 51
+echo "API flood exited with code ($?)"
 
-exit 0
+bin/docker/node/websocket.js $DOCKER_HOSTNAME:4000
+echo "WEBSOCKET flood exited with code ($?)"
+
+exit $?
